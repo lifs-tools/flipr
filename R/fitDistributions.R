@@ -150,6 +150,8 @@ fits <- function(tibble, outputPrefix, skipGroupOutput = TRUE) {
       "ParValue"
     ) %>% dplyr::filter(ppmMassRange == min(ppmMassRange))
 
+  # TODO additional renormalization after grouping for each "species", adduct, polarity and ppmMassRange -> scale needs to fall into the range of 0-1
+
   readr::write_tsv(lipidCreatorParams, path = file.path(paste0(
     outputPrefix, "-lipidcreator-parameters.tsv"
   )))
