@@ -17,6 +17,8 @@ Imports:
     nls.multstart,
     purrr,
     nlstools,
-    tidyr
+    tidyr,
+    magrittr,
+    broom
 Suggests:
     testthat

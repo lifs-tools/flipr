@@ -142,21 +142,20 @@ plotDist <- function(xrange = c(-10, 10),
       length.out = n
     ))
   #df$y <-
-  #print(df)
+  #message(df)
   #integral <- integrate(f=eval(dist.fun), lower = xrange[[1]], upper = xrange[[2]])
-  #print(integral)
+  #message(integral)
   plot <- ggplot2::ggplot(df, ggplot2::aes(x = x)) +
     ggplot2::stat_function(fun = eval(dist.fun), args = list(...))
   plot
 }
-
 
 fit <- function(tibble, dist.fun, ...) {
   tibble$fragment <- as.factor(tibble$fragment)
   tibble$`foundMassRange[ppm]` <-
     as.factor(tibble$`foundMassRange[ppm]`)
   lvl <- levels(tibble$fragment)
-  #print(paste("Levels of fragment:", lvl, sep = " "))
+  #message(paste("Levels of fragment:", lvl, sep = " "))
   # plots_neg_frags <- lapply(dfl_neg_frags, function(dt) {
   #   plot1 <- qplot(x=precursorCollisionEnergy, y=scanRelativeIntensity, data=dt)
   #   plot1
@@ -168,14 +167,14 @@ fit <- function(tibble, dist.fun, ...) {
   plots <- lapply(splits, function(splitset) {
     polFraAdd <-
       splitset %>% dplyr::group_by(polarity, `foundMassRange[ppm]`, fragment, adduct)
-    #print(paste("Groups:", groups(polFraAdd), sep = " "))
+    #message(paste("Groups:", groups(polFraAdd), sep = " "))
     #calculate fit based on estimated distribution coefficients and selected distribution
     polFraAddSummary <-
       polFraAdd %>% dplyr::summarise(
         MeanEpc = mean(precursorCollisionEnergy),
         sdEpc = sd(precursorCollisionEnergy)
       )
-    #print(polFraAddSummary)
+    #message(polFraAddSummary)
     plot <- ggplot2::qplot(
       x = precursorCollisionEnergy,
       y = scanRelativeIntensity,
