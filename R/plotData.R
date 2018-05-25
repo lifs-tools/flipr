@@ -7,9 +7,9 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
       data = data,
       color = fragadd,
       geom = "point",
-      main = paste(unique(dt$species), unique(data$polarity), sep = " ")
+      main = paste(unique(data$species), unique(data$polarity), sep = " ")
     )  + ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap( ~ data$`foundMassRange[ppm]`, ncol =6) +
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6) +
     ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]")
   ggplot2::ggsave(
     rawTicVsTotalIonCurrentPlot,
@@ -68,7 +68,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
       colour = "blue",
       se = TRUE,
       level = 0.95
-    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Absolute Intensity [a.u.]") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
@@ -100,7 +100,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
       colour = "blue",
       se = TRUE,
       level = 0.95
-    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=round_any(max(dt.noNAs$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
@@ -134,11 +134,11 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
       )
     ) +
     ggplot2::geom_area(position = "identity", alpha = 0.3) +
-    ggplot2::scale_x_continuous(breaks = seq(from=-10, to=round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
-    ggplot2::facet_wrap(. ~ data$`foundMassRange[ppm]`, ncol = 2)
+    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2)
   ggplot2::ggsave(
     precCeVsIsrnOverlayPlot,
     filename = paste0(basename, "-precCE-vs-I-srn-overlay.", plotFormat),
@@ -167,7 +167,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
       colour = "blue",
       se = TRUE,
       level = 0.95
-    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Mass Error [ppm]") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
@@ -223,7 +223,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
       data = data,
       linetype = 2
     ) +
-    ggplot2::facet_wrap( ~ `foundMassRange[ppm]`, nrow = nppms) +
+    ggplot2::facet_wrap(~ `foundMassRange[ppm]`, nrow = nppms) +
     ggplot2::xlab("Fragment m/z") +
     ggplot2::ylab("Normalized Count") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment')

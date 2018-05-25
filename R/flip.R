@@ -41,45 +41,45 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
         # split dataframe based on polarity
         dfl <- split(data, data$polarity)
 
-        lapply(dfl, function(dt) {
+        lapply(dfl, function(splitData) {
           customTheme <-
             ggplot2::theme_get() + ggplot2::theme(axis.text.x  = ggplot2::element_text(angle = 90, vjust = 0.5))
           ggplot2::theme_set(customTheme)
-          polarity <- unique(dt$polarity)
+          polarity <- unique(splitData$polarity)
           fileName <- paste(fileName, polarity, sep = "-")
 
           message("fragment-ppm-boxplot")
-          ppms <- sort(unique(dt$`foundMassRange[ppm]`))
-          dt$`foundMassRange[ppm]` <-
-            paste(dt$`foundMassRange[ppm]`, "[ppm]", sep = " ")
-          dt$`foundMassRange[ppm]` <-
-            factor(dt$`foundMassRange[ppm]`,
+          ppms <- sort(unique(splitData$`foundMassRange[ppm]`))
+          splitData$`foundMassRange[ppm]` <-
+            paste(splitData$`foundMassRange[ppm]`, "[ppm]", sep = " ")
+          splitData$`foundMassRange[ppm]` <-
+            factor(splitData$`foundMassRange[ppm]`,
                    levels = paste(ppms, "[ppm]", sep = " "))
 
-          dt$fragadd <- paste(dt$fragment, dt$adduct, sep = " ")
-          dt$fragadd <-
-            factor(dt$fragadd, levels = unique(dt[order(dt$calculatedMass),]$fragadd))
+          splitData$fragadd <- paste(splitData$fragment, splitData$adduct, sep = " ")
+          splitData$fragadd <-
+            factor(splitData$fragadd, levels = unique(splitData[order(splitData$calculatedMass),]$fragadd))
 
-          dt$fragment <-
-            factor(dt$fragment, levels = unique(dt[order(dt$calculatedMass),]$fragment))
+          splitData$fragment <-
+            factor(splitData$fragment, levels = unique(splitData[order(splitData$calculatedMass),]$fragment))
 
-          flipr::plotRawTicVsTotalIonCurrent(dt, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotFragmentPpmBoxplot(dt, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotRawTicVsTotalIonCurrent(data=splitData, basename = fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotFragmentPpmBoxplot(splitData, fileName, plotFormat=plotFormat, plotDimensions=a4r)
 
-          dt.NAs <- subset(dt, subset = is.na(dt$foundMass))
-          if (nrow(dt.NAs) > 0) {
-            readr::write_tsv(dt.NAs, path = file.path(paste(
+          splitData.NAs <- subset(splitData, subset = is.na(splitData$foundMass))
+          if (nrow(splitData.NAs) > 0) {
+            readr::write_tsv(splitData.NAs, path = file.path(paste(
               fileName, "-no-ions-found.tsv", sep = ""
             )))
           }
-          dt.noNAs <- dt[!is.na(dt$foundMass), ]
+          splitData.noNAs <- splitData[!is.na(splitData$foundMass), ]
 
-          flipr::plotPrecCollEnergyVsFoundIntensity(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotPrecCollEnergyVsMassErrorPpm(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotMassDensityDistribution(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-          flipr::plotMzVsMerrPpm(dt.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotPrecCollEnergyVsFoundIntensity(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotPrecCollEnergyVsMassErrorPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotMassDensityDistribution(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+          flipr::plotMzVsMerrPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
         })
       } else {
         message(paste("Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"))

@@ -135,7 +135,7 @@ plotFits <-
 
     ciplot <- ggplot2::ggplot(params, ggplot2::aes(col = fragment)) +
       ggplot2::geom_point(ggplot2::aes(combinationId, estimate)) +
-      ggplot2::facet_wrap(adduct ~ term, scale = 'free_x', ncol = 2) +
+      ggplot2::facet_wrap(adduct ~ term, scale = 'free_x',labeller = ggplot2::labeller(.multi_line = FALSE), ncol = 2) +
       ggplot2::geom_errorbar(ggplot2::aes(combinationId, ymin = conf.low, ymax = conf.high)) +
       ggplot2::coord_flip() +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
