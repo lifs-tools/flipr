@@ -15,4 +15,4 @@ option_list <- list(
 # get command line options, if help option encountered print help and exit,
 # otherwise if options not found on command line then set defaults,
 opt <- parse_args(OptionParser(option_list=option_list))
-plotFragmentDistributions(projectDir = opt$projectDir, plotFormat = opt$plotFormat, filePattern = opt$filePattern, dataPlots = opt$dataPlots)
+flipFits <- flip(projectDir = opt$projectDir, plotFormat = opt$plotFormat, filePattern = opt$filePattern, dataPlots = opt$dataPlots)
