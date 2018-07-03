@@ -43,6 +43,8 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
       warning(paste("instrument column must have one distinct value only, has:",unique(originalData$instrument)))
       stopifnot(length(unique(originalData$instrument)==1))
     }
+    instrumentId <- unique(originalData$instrument)[[1]]
+    skipGroupOutput <- TRUE
     # TODO: split by origin to allow better comparability / training
     splitOriginalData <- split(originalData, originalData$origin)
     splitOriginalDataIndex <- seq_along(splitOriginalData)
@@ -56,7 +58,7 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
         lapply(dfl, function(splitData, splitFileName, plotFormat){
           polarity <- unique(splitData$polarity)
           splitFileName <- paste(splitFileName, polarity, sep="-")
-          nlsFitOutputList <- flipr::fits(splitData, splitFileName)
+          nlsFitOutputList <- flipr::fits(tibble=splitData, outputPrefix=splitFileName, instrumentId=instrumentId, skipGroupOutput=skipGroupOutput)
           flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
         },fileName, plotFormat)
 

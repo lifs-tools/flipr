@@ -35,9 +35,10 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
 
 #' @importFrom magrittr %>%
 #' @export
-fits <- function(tibble, outputPrefix, skipGroupOutput = TRUE) {
+fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
   message(paste(
     "Fitting scanRelativeIntensities of fragments for:",
+    instrumentId,
     outputPrefix,
     sep = " "
   ))
@@ -137,7 +138,7 @@ fits <- function(tibble, outputPrefix, skipGroupOutput = TRUE) {
       model = fitFun,
       ParKey = term,
       ParValue = estimate
-    ) %>% dplyr::mutate(#instrument = NA,
+    ) %>% dplyr::mutate(instrument = instrumentId,
                         ppmMassRange = as.numeric(ppmMassRange)) %>%
     dplyr::select(
       "instrument",
