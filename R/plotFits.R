@@ -34,7 +34,7 @@ plotFits <-
                           linetype = "dashed") +
       ggplot2::facet_wrap(
         fragment + adduct + `foundMassRange[ppm]` ~ polarity,
-        labeller = ggplot2::label_context(multi_line=FALSE)),
+        labeller = ggplot2::label_context(multi_line=FALSE),
         ncol = 6
       ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
