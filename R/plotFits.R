@@ -34,7 +34,7 @@ plotFits <-
                           linetype = "dashed") +
       ggplot2::facet_wrap(
         fragment + adduct + `foundMassRange[ppm]` ~ polarity,
-        labeller = ggplot2::labeller(.cols = ggplot2::label_value(labels=preds_from_data, multi_line=FALSE)),
+        labeller = ggplot2::labeller(.rows=ggplot2::label_value(labels=params, multi_line=FALSE), .cols = ggplot2::label_value(labels=preds_from_data, multi_line=FALSE)),
         ncol = 6
       ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
@@ -103,7 +103,7 @@ plotFits <-
       ) +
       ggplot2::facet_wrap(
         fragment + adduct + `foundMassRange[ppm]` ~ polarity,
-        labeller = ggplot2::labeller(.cols = ggplot2::label_value(labels=nls.tibble, multi_line=FALSE)),
+        labeller = ggplot2::labeller(.rows=ggplot2::label_value(labels=params, multi_line=FALSE),, .cols = ggplot2::label_value(labels=nls.tibble, multi_line=FALSE)),
         ncol = 6
       ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
@@ -135,7 +135,7 @@ plotFits <-
 
     ciplot <- ggplot2::ggplot(params, ggplot2::aes(col = fragment)) +
       ggplot2::geom_point(ggplot2::aes(combinationId, estimate)) +
-      ggplot2::facet_wrap(adduct ~ term, scale = 'free_x',labeller = ggplot2::labeller(.cols = ggplot2::label_value(labels=params, multi_line=FALSE)), ncol = 2) +
+      ggplot2::facet_wrap(adduct ~ term, scale = 'free_x',labeller = ggplot2::labeller(.rows=ggplot2::label_value(labels=params, multi_line=FALSE), .cols = ggplot2::label_value(labels=params, multi_line=FALSE)), ncol = 2) +
       ggplot2::geom_errorbar(ggplot2::aes(combinationId, ymin = conf.low, ymax = conf.high)) +
       ggplot2::coord_flip() +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
