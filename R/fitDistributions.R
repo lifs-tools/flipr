@@ -137,7 +137,7 @@ fits <- function(tibble, outputPrefix, skipGroupOutput = TRUE) {
       model = fitFun,
       ParKey = term,
       ParValue = estimate
-    ) %>% dplyr::mutate(instrument = NA,
+    ) %>% dplyr::mutate(#instrument = NA,
                         ppmMassRange = as.numeric(ppmMassRange)) %>%
     dplyr::select(
       "instrument",
