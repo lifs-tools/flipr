@@ -11,6 +11,7 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
     message(paste("Creating plots for file", fip_file, "\n", sep = " "))
     colspec <- readr::cols(
       .default = readr::col_double(),
+      instrument = readr::col_character(),
       origin = readr::col_character(),
       scanNumber = readr::col_integer(),
       polarity = readr::col_character(),
@@ -38,6 +39,10 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
     a4 <- list(width=8.27, height=11.69)
     a4r <- list(width=11.69, height=8.27)
     nlsFitOutputList <- list()
+    if(length(unique(originalData$instrument))!=1) {
+      warning(paste("instrument column must have one distinct value only, has:",unique(originalData$instrument)))
+      stopifnot(length(unique(originalData$instrument)==1))
+    }
     # TODO: split by origin to allow better comparability / training
     splitOriginalData <- split(originalData, originalData$origin)
     splitOriginalDataIndex <- seq_along(splitOriginalData)
