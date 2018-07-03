@@ -103,7 +103,7 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
         warning(paste("No data available for", fip_file, sep = " "))
       }
     }, dataIndex=splitOriginalDataIndex, lengthOfIndex=length(splitOriginalDataIndex))
-    list(name=fileName, fits=nlsFitOutputList)
+    list(name=baseFileName, fits=nlsFitOutputList)
   }, simplify = FALSE, USE.NAMES = TRUE)
   readr::write_tsv(multiDataMap, path=file.path("origin-index-data-map.tsv"))
   fip_fits
