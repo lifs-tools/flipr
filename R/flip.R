@@ -7,7 +7,6 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
                pattern = filePattern,
                full.names = TRUE)
   multiDataMap <- data.frame()
-  colnames(multiDataMap) <- c("name", "index", "origin")
   fip_fits <- sapply(fip_files, function(fip_file) {
     message(paste("Creating plots for file", fip_file, "\n", sep = " "))
     colspec <- readr::cols(
