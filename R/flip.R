@@ -50,7 +50,7 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
         dfl <- split(data, data$polarity)
         lapply(dfl, function(splitData, splitFileName, plotFormat){
           polarity <- unique(splitData$polarity)
-          splitFileNamepaste(splitFileName, polarity, sep="-")
+          splitFileName <- paste(splitFileName, polarity, sep="-")
           nlsFitOutputList <- flipr::fits(splitData, splitFileName)
           flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
         },fileName, plotFormat)
