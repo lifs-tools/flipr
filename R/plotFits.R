@@ -40,7 +40,9 @@ plotFits <-
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
       ggplot2::labs(title = paste0(unique(preds_from_data$species)), colour = 'Fragment') +
       ggplot2::ylab(expression(paste("Residuals (", Delta,"(",y,",",yhat,")", ")",sep = " "))) +
-      ggplot2::xlab('HCD Collision Energy [eV]')# +
+      ggplot2::xlab('HCD Collision Energy [eV]') +
+      ggplot2::scale_y_continuous(limits = c(-0.1, 0.1))
+    # +
     #theme(legend.position = c(0.9, 0.15))
     ggplot2::ggsave(
       resplot,
