@@ -32,7 +32,7 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
     )
     originalData <- readr::read_tsv(fip_file, col_types = colspec)
     message(paste("Retaining rows with precursorCollisionEnergy >=",minPrecursorCollisionEnergy))
-    originalData <- originalData %>% filter_all(precursorCollisionEnergy>=minPrecursorCollisionEnergy)
+    originalData <- originalData %>% dplyr::filter_all(precursorCollisionEnergy>=minPrecursorCollisionEnergy)
     message(paste(nrow(originalData)," rows retained after filter!"))
     baseFileName <- gsub(pattern = "\\.tsv$", "", basename(fip_file))
     a4 <- list(width=8.27, height=11.69)
