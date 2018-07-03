@@ -31,9 +31,9 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
       adduct = readr::col_character()
     )
     originalData <- readr::read_tsv(fip_file, col_types = colspec)
-    message(paste("Retaining rows with precursorCollisionEnergy >=",minPrecursorCollisionEnergy))
+    message(paste("Filtering",nrow(originalData), "rows with precursorCollisionEnergy >=",minPrecursorCollisionEnergy))
     originalData <- originalData %>% dplyr::filter(precursorCollisionEnergy>=minPrecursorCollisionEnergy)
-    message(paste(nrow(originalData)," rows retained after filter!"))
+    message(paste(nrow(originalData),"rows retained after filter!"))
     baseFileName <- gsub(pattern = "\\.tsv$", "", basename(fip_file))
     a4 <- list(width=8.27, height=11.69)
     a4r <- list(width=11.69, height=8.27)
@@ -47,8 +47,14 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
 
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
       if (nrow(data) > 0) {
-        nlsFitOutputList <- flipr::fits(data, fileName)
-        flipr::plotFits(nlsFitOutputList, fileName, format=plotFormat)
+        dfl <- split(data, data$polarity)
+        lapply(dfl, function(splitData, splitFileName, plotFormat){
+          polarity <- unique(splitData$polarity)
+          splitFileNamepaste(splitFileName, polarity, sep="-")
+          nlsFitOutputList <- flipr::fits(splitData, splitFileName)
+          flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
+        },fileName, plotFormat)
+
         if(dataPlots) {
           # split dataframe based on polarity
           dfl <- split(data, data$polarity)
