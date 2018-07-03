@@ -9,7 +9,7 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
       geom = "point",
       main = paste(unique(data$species), unique(data$polarity), sep = " ")
     )  + ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_context(multi_line=FALSE)) +
     ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]")
   ggplot2::ggsave(
     rawTicVsTotalIonCurrentPlot,
@@ -30,7 +30,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
       main = paste(unique(data$species), unique(data$polarity), sep = " ")
     ) + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap( ~ data$`foundMassRange[ppm]`, ncol =
-                           6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylab(expression(paste(
+                           6, labeller = ggplot2::label_context(multi_line=FALSE)) + ggplot2::ylab(expression(paste(
                              Delta, " of calculated and found m/z", sep = " "
                            ))) + ggplot2::xlab("Fragment") + ggplot2::geom_jitter(ggplot2::aes(
                              x = fragadd,
@@ -72,7 +72,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
     ggplot2::ylab("Absolute Intensity [a.u.]") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_context(multi_line=FALSE))
   ggplot2::ggsave(
     pceFiPlot,
     filename = paste0(basename, "-precCE-vs-I.", plotFormat),
@@ -104,7 +104,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_context(multi_line=FALSE))
   ggplot2::ggsave(
     precCeVsIsrnPlot,
     filename = paste0(basename, "-precCE-vs-I-srn.", plotFormat),
@@ -138,7 +138,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
-    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_context(multi_line=FALSE))
   ggplot2::ggsave(
     precCeVsIsrnOverlayPlot,
     filename = paste0(basename, "-precCE-vs-I-srn-overlay.", plotFormat),
@@ -171,7 +171,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
     ggplot2::ylab("Mass Error [ppm]") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_context(multi_line=FALSE))
   ggplot2::ggsave(
     precCeVsMerrPpmmPlot,
     filename = paste0(basename, "-precCE-vs-merr-ppm.", plotFormat),
@@ -223,7 +223,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
       data = data,
       linetype = 2
     ) +
-    ggplot2::facet_wrap(~ `foundMassRange[ppm]`, nrow = nppms, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::facet_wrap(~ `foundMassRange[ppm]`, nrow = nppms, labeller = ggplot2::label_context(multi_line=FALSE)) +
     ggplot2::xlab("Fragment m/z") +
     ggplot2::ylab("Normalized Count") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment')
@@ -253,7 +253,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
   ) + ggplot2::ylab("Mass Error [ppm]") +
     ggplot2::xlab("Fragment m/z") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_context(multi_line=FALSE)) +
     ggplot2::geom_jitter(
       ggplot2::aes(x = foundMass, y = `foundMassError[ppm]`, color = fragadd),
       data = data,
