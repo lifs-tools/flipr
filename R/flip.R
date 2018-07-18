@@ -1,17 +1,16 @@
 #' @importFrom magrittr %>%
 #' @export
-flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", dataPlots=TRUE, minPrecursorCollisionEnergy=0) {
+flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", dataPlots=TRUE, minPrecursorCollisionEnergy=0,
+start_lower, start_upper, lower, upper, trainModel=FALSE) {
   setwd(projectDir)
   fip_files <-
     list.files(path = projectDir,
                pattern = filePattern,
                full.names = TRUE)
-  multiDataMap <- data.frame()
   fip_fits <- sapply(fip_files, function(fip_file) {
     message(paste("Creating plots for file", fip_file, "\n", sep = " "))
     colspec <- readr::cols(
       .default = readr::col_double(),
-      instrument = readr::col_character(),
       origin = readr::col_character(),
       scanNumber = readr::col_integer(),
       polarity = readr::col_character(),
@@ -26,6 +25,8 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
       `precursorCharge[0]` = readr::col_integer(),
       msFunction = readr::col_character(),
       spectrumType = readr::col_character(),
+      instrument = readr::col_character(),
+      group = readr::col_character(),
       `foundMassRange[ppm]` = readr::col_integer(),
       species = readr::col_character(),
       fragment = readr::col_character(),
@@ -45,26 +46,45 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
     }
     instrumentId <- unique(originalData$instrument)[[1]]
     skipGroupOutput <- TRUE
+    originalData$originId <- as.integer(as.factor(originalData$origin))
+    originIndexMap <- data.frame("origin"=originalData$origin, "id"=originalData$originId)
+    readr::write_tsv(unique(originIndexMap), path=file.path(paste(baseFileName, "-origin-index-map.tsv", sep ="")))
     # TODO: split by origin to allow better comparability / training
     splitOriginalData <- split(originalData, originalData$origin)
-    splitOriginalDataIndex <- seq_along(splitOriginalData)
-    multiDataMap <- rbind(multiDataMap, data.frame(name=baseFileName, index=splitOriginalDataIndex, origin=splitOriginalData))
-    lapply(splitOriginalData, function(data, dataIndex, lengthOfIndex) {
-      message(paste0("Processing data from ", unique(data$origin)))
+    #print(splitOriginalData)
+    message(paste("Split data into",length(splitOriginalData),"partitions with levels", paste(levels(as.factor(originalData$origin)),collapse=",")))
+    lapply(splitOriginalData, function(splitOriginalData, lengthOfIndex) {
+      subSetData <- splitOriginalData
+      dataIndex <- unique(subSetData$originId)[[1]]
+      print(dataIndex)
+      message(paste0("Processing data from ", unique(subSetData$origin)))
 
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
-      if (nrow(data) > 0) {
-        dfl <- split(data, data$polarity)
-        lapply(dfl, function(splitData, splitFileName, plotFormat){
-          polarity <- unique(splitData$polarity)
-          splitFileName <- paste(splitFileName, polarity, sep="-")
-          nlsFitOutputList <- flipr::fits(tibble=splitData, outputPrefix=splitFileName, instrumentId=instrumentId, skipGroupOutput=skipGroupOutput)
-          flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
-        },fileName, plotFormat)
+      message(paste0("Writing to file ",fileName))
+      if (nrow(subSetData) > 0) {
+        if(trainModel) {
+          dfl <- split(subSetData, subSetData$polarity)
+          lapply(dfl, function(splitData, splitFileName, plotFormat){
+            polarity <- unique(splitData$polarity)
+            splitFileName <- paste(splitFileName, polarity, sep="-")
+            stopifnot(length(unique(splitData$group))==1)
+            nlsFitOutputList <- flipr::fits(tibble=splitData,
+                                            outputPrefix=splitFileName,
+                                            group=unique(splitData$group)[[1]],
+                                            instrumentId=instrumentId,
+                                            skipGroupOutput=skipGroupOutput,
+                                            start_lower=start_lower,
+                                            start_upper=start_upper,
+                                            lower=lower,
+                                            upper=upper)
+            flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
+          },fileName, plotFormat)
+        }
+
 
         if(dataPlots) {
           # split dataframe based on polarity
-          dfl <- split(data, data$polarity)
+          dfl <- split(subSetData, subSetData$polarity)
 
           lapply(dfl, function(splitData) {
             customTheme <-
@@ -115,9 +135,8 @@ flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", 
       } else {
         warning(paste("No data available for", fip_file, sep = " "))
       }
-    }, dataIndex=splitOriginalDataIndex, lengthOfIndex=length(splitOriginalDataIndex))
+    }, lengthOfIndex=length(splitOriginalData))
     list(name=baseFileName, fits=nlsFitOutputList)
   }, simplify = FALSE, USE.NAMES = TRUE)
-  readr::write_tsv(multiDataMap, path=file.path("origin-index-data-map.tsv"))
   fip_fits
 }

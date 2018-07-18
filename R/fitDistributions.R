@@ -35,13 +35,15 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
 
 #' @importFrom magrittr %>%
 #' @export
-fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
+fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TRUE, start_lower, start_upper, lower, upper) {
   message(paste(
     "Fitting scanRelativeIntensities of fragments for:",
     instrumentId,
     outputPrefix,
+    group,
     sep = " "
   ))
+  message("Creating nls.tibbleId")
   nls.tibbleId <- tibble %>%
     dplyr::mutate(polarity = replace(polarity, polarity == "POSITIVE", "(+)")) %>%
     dplyr::mutate(polarity = replace(polarity, polarity == "NEGATIVE", "(-)")) %>%
@@ -52,21 +54,25 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
       adduct,
       polarity,
       `foundMassRange[ppm]`,
+      group,
       sep = "|",
       remove = FALSE
     )
 
+  message("Creating nls.tibble")
   nls.tibble <-
     nls.tibbleId %>% dplyr::group_by(., combinationId) %>% dplyr::mutate(samplesPerCombinationId = dplyr::n()) %>% dplyr::do(writeGroup(., outputPrefix, skip =
                                                                     skipGroupOutput))
+  message("Writing data for fit")
   readr::write_tsv(nls.tibble, path = file.path(paste0(
     outputPrefix, "-data-for-fit.tsv"
   )))
 
-
+  message("Creating nls.tibble.nested")
   nls.tibble.nested <- nls.tibble %>%
     tidyr::nest()
   # run nls fits with automatics model selection based on AIC
+  message("Running nls.multstart on nls.tibble.nested")
   fits <- nls.tibble.nested %>%
     dplyr::mutate(fit = purrr::map(
       data,
@@ -74,46 +80,30 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
         scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
         data = .x,
         iter = 500,
-        start_lower = c(
-          meanlog = -10,
-          sdlog = 0.01,
-          scale = min(.x$scanRelativeIntensity),
-          shift = -200
-        ),
-        start_upper = c(
-          meanlog = 10,
-          sdlog = 10,
-          scale = max(.x$scanRelativeIntensity),
-          shift = 200
-        ),
+        start_lower = start_lower,
+        start_upper = start_upper,
         supp_errors = 'Y',
         na.action = na.omit,
-        lower = c(
-          meanlog = -20,
-          sdlog = 0.0001,
-          scale = 0.000001,
-          shift = -1000
-        ),
-        upper = c(
-          meanlog = 20,
-          sdlog = 20,
-          scale = 5,
-          shift = 1000
-        )
+        lower = lower,
+        upper = upper
       )
-    ),
+    ,safely(x, otherwise = NA)),
     fitFun = "dlnormPar")
   message(paste("# of fits:", nrow(fits), sep = " "))
   stopifnot(length(fits) > 0)
 
+  message("Extracting fit info")
+  print(fits)
   # get fit information / statistics
   info <- fits %>%
     tidyr::unnest(fit %>% purrr::map(broom::glance))
 
+  message("Extracting fit parameters")
   # get fit parameters
   params <- fits %>%
     tidyr::unnest(fit %>% purrr::map(broom::tidy))
 
+  message("Calculating confidence intervals")
   # calculate confidence intervals for parameters
   CI <- fits %>%
     tidyr::unnest(fit %>% purrr::map(
@@ -125,11 +115,12 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
     dplyr::mutate(., term = c('meanlog', 'sdlog', 'scale', 'shift')) %>%
     dplyr::ungroup()
 
+  message("Creating LipidCreator parameters")
   # create output for lipidcreator import
   lipidCreatorParams <- params %>%
     tidyr::separate(
       combinationId,
-      c("species", "fragment", "adduct", "polarity", "ppmMassRange"),
+      c("species", "fragment", "adduct", "polarity", "ppmMassRange", "group"),
       sep = "\\|",
       remove = TRUE
     ) %>% dplyr::rename(
@@ -146,6 +137,7 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
       "frag",
       "adduct",
       "ppmMassRange",
+      "group",
       "model",
       "ParKey",
       "ParValue"
@@ -153,17 +145,23 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
 
   # TODO additional renormalization after grouping for each "species", adduct, polarity and ppmMassRange -> scale needs to fall into the range of 0-1
 
+  message("Writing LipidCreator parameters")
   readr::write_tsv(lipidCreatorParams, path = file.path(paste0(
     outputPrefix, "-lipidcreator-parameters.tsv"
   )))
 
   # merge parameters and CI estimates
+  message("Merging fit parameters and CI estimates")
   params <- merge(params, CI, by = dplyr::intersect(names(params), names(CI)))
   # params <- params %>% mutate(combinationId = paste(fragment, adduct, polarity, sep = "-", collapse=T) )
-  readr::write_tsv(params, path = file.path(paste(outputPrefix, "-parameters.tsv", sep =
-                                             "")))
+
+  message("Writing merged parameters")
+  readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-parameters.tsv")))
+
+  message("Calculating predictions from data")
   preds_from_data <- fits %>%  tidyr::unnest(fit %>% purrr::map(broom::augment))
 
+  message("Creating new x-values for predictions")
   # use tibble with combinationId for merging and create x-values for each fit (covering the complete x-axis ranges)
   new_preds <- nls.tibbleId %>%
     dplyr::do(.,
@@ -173,6 +171,7 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
          stringsAsFactors = FALSE
        ))
 
+  message("Calculating min/max x-value range for each fit")
   # calculate the minimum and maximum range of x-values for each unique combination (fit) and add some slack
   max_min <- dplyr::group_by(nls.tibbleId, combinationId) %>%
     dplyr::summarise(
@@ -182,6 +181,7 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
     ) %>%
     dplyr::ungroup()
 
+  message("Recalculating predictions based on fit parameters")
   # recalculate predictions based on fit parameters
   preds <- fits %>%
     tidyr::unnest(fit %>% purrr::map(augment, newdata = new_preds)) %>%
@@ -195,11 +195,14 @@ fits <- function(tibble, outputPrefix, instrumentId, skipGroupOutput = TRUE) {
     dplyr::rename(., scanRelativeIntensity = .fitted) %>%
     dplyr::ungroup()
 
+  message("Extracting fit details")
   # get details of fits
   fitinfo <-
     info %>% dplyr::select(combinationId, fitFun, sigma, isConv, finTol, logLik, AIC, BIC)
+  message("Writing fit predictions")
   readr::write_tsv(preds, path = file.path(paste(outputPrefix, "-predictions.tsv", sep =
                                             "")))
+  message("Writing fit info")
   readr::write_tsv(fitinfo, path = file.path(paste(outputPrefix, "-fit-info.tsv", sep =
                                               "")))
   list(

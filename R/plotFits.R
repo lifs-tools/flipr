@@ -14,7 +14,8 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
-          "foundMassRange[ppm]"
+          "foundMassRange[ppm]",
+          "group"
         ),
         sep = "\\|",
         remove = FALSE
@@ -38,7 +39,7 @@ plotFits <-
         ncol = 6
       ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
-      ggplot2::labs(title = paste0(unique(preds_from_data$species)), colour = 'Fragment') +
+      ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)), colour = 'Fragment') +
       ggplot2::ylab(expression(paste("Residuals (", Delta,"(",y,",",yhat,")", ")",sep = " "))) +
       ggplot2::xlab('HCD Collision Energy [eV]') +
       ggplot2::scale_y_continuous(limits = c(-0.1, 0.1))
@@ -60,7 +61,8 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
-          "foundMassRange[ppm]"
+          "foundMassRange[ppm]",
+          "group"
         ),
         sep = "\\|",
         remove = FALSE
@@ -75,7 +77,7 @@ plotFits <-
                                      adduct,
                                      polarity,
                                      `foundMassRange[ppm]`,
-                                     precursorCollisionEnergy) %>% dplyr::summarize(m = mean(scanRelativeIntensity))
+                                     precursorCollisionEnergy,group) %>% dplyr::summarize(m = mean(scanRelativeIntensity))
 
     fitplot <- ggplot2::ggplot() +
       ggplot2::geom_point(
@@ -109,7 +111,7 @@ plotFits <-
         ncol = 6
       ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
-      ggplot2::labs(title = paste0(unique(preds_from_data$species)), colour = 'Fragment') +
+      ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)), colour = 'Fragment') +
       ggplot2::ylab('Relative Intensity') +
       ggplot2::xlab('HCD Collision Energy [eV]')# +
     #theme(legend.position = c(0.9, 0.15))
@@ -129,7 +131,8 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
-          "foundMassRange[ppm]"
+          "foundMassRange[ppm]",
+          "group"
         ),
         sep = "\\|",
         remove = FALSE
@@ -141,7 +144,7 @@ plotFits <-
       ggplot2::geom_errorbar(ggplot2::aes(combinationId, ymin = conf.low, ymax = conf.high)) +
       ggplot2::coord_flip() +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
-      ggplot2::labs(title = paste0(unique(preds_from_data$species)),
+      ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)),
                     caption = "Conf.Int. between [2.5%, 97.5%]",
                     colour = 'Fragment') +
       ggplot2::xlab('Fragment') +

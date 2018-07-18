@@ -7,7 +7,7 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
       data = data,
       color = fragadd,
       geom = "point",
-      main = paste(unique(data$species), unique(data$polarity), sep = " ")
+      main = paste(unique(data$species), unique(data$polarity), unique(data$group), sep = " ")
     )  + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
     ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]")
@@ -27,7 +27,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
       data = data,
       color = fragadd,
       geom = c("violin"),
-      main = paste(unique(data$species), unique(data$polarity), sep = " ")
+      main = paste(unique(data$species), unique(data$polarity), unique(data$group), sep = " ")
     ) + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap( ~ data$`foundMassRange[ppm]`, ncol =
                            6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylab(expression(paste(
@@ -61,6 +61,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
       main = paste(
         unique(data$species),
         unique(data$polarity),
+        unique(data$group),
         sep = " "
       )
     ) + ggplot2::geom_smooth(
@@ -93,6 +94,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
       main = paste(
         unique(data$species),
         unique(data$polarity),
+        unique(data$group),
         sep = " "
       )
     ) + ggplot2::geom_smooth(
@@ -104,7 +106,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
   ggplot2::ggsave(
     precCeVsIsrnPlot,
     filename = paste0(basename, "-precCE-vs-I-srn.", plotFormat),
@@ -130,6 +132,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
       main = paste(
         unique(data$species),
         unique(data$polarity),
+        unique(data$group),
         sep = " "
       )
     ) +
@@ -138,7 +141,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Precursor Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
-    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
   ggplot2::ggsave(
     precCeVsIsrnOverlayPlot,
     filename = paste0(basename, "-precCE-vs-I-srn-overlay.", plotFormat),
@@ -160,6 +163,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
       main = paste(
         unique(data$species),
         unique(data$polarity),
+        unique(data$group),
         sep = " "
       )
     ) + ggplot2::geom_smooth(
@@ -196,6 +200,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
     ggplot2::ggtitle(paste(
       unique(data$species),
       unique(data$polarity),
+      unique(data$group),
       sep = " "
     )) + ggplot2::geom_density(ggplot2::aes(y = ..count.. / sum(..count..)), data = data) +
     ggplot2::geom_vline(ggplot2::aes(xintercept = calculatedMass),
@@ -248,6 +253,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
     main = paste(
       unique(data$species),
       unique(data$polarity),
+      unique(data$group),
       sep = " "
     )
   ) + ggplot2::ylab("Mass Error [ppm]") +
