@@ -125,6 +125,7 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
             flipr::plotPrecCollEnergyVsMassErrorPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
             flipr::plotMassDensityDistribution(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
             flipr::plotMzVsMerrPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+            flipr::plotScanRelativeIntensityHistogram(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
           })
         } else {
           message(paste("Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"))

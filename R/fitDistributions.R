@@ -1,12 +1,34 @@
 a4 <- list(width = 8.27, height = 11.69)
 a4r <- list(width = 11.69, height = 8.27)
 
+#huber loss function
+#' @export
+huberLossPw <- function(x, hgamma=0.05) {
+  stopifnot(is.double(x))
+  if(abs(x)<=hgamma) {
+    0.5*(x)^2
+  } else {
+    hgamma*abs(x) - ((hgamma^2)/2)
+  }
+}
+
+#' @export
+huberLoss <- function(x, hgamma=0.05) {
+  sapply(x,huberLossPw,hgamma=hgamma)
+}
+
+huberLoss2 <- function(x1,x2,hgamma=0.05) {
+  huberLoss(x1-x2,hgamma=hgamma)
+}
+
+#' @export
 dlnormMode <- function(meanlog, sdlog, shift=0) {
   exp(meanlog - (sdlog ^ 2)) - shift
 }
 
 #parameterized version of log-normal density function with additional "norm" expression and "scale" factor.
 #both are multiplied with the actual log-normal density kernel.
+#' @export
 dlnormPar <-
   function(x,
            meanlog = 0,
@@ -53,6 +75,7 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
       fragment,
       adduct,
       polarity,
+      calculatedMass,
       `foundMassRange[ppm]`,
       group,
       sep = "|",
@@ -73,10 +96,11 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
     tidyr::nest()
   # run nls fits with automatics model selection based on AIC
   message("Running nls.multstart on nls.tibble.nested")
+  ls( environment() )
   fits <- nls.tibble.nested %>%
     dplyr::mutate(fit = purrr::map(
       data,
-      ~ nls.multstart::nls_multstart(
+      ~ flipr::nls_multstart2(
         scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
         data = .x,
         iter = 500,
@@ -89,15 +113,14 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
       )
     ,safely(x, otherwise = NA)),
     fitFun = "dlnormPar")
-  message(paste("# of fits:", nrow(fits), sep = " "))
   stopifnot(length(fits) > 0)
 
-  message("Extracting fit info")
+  message(paste("Extracting fit info for", nrow(fits), "fits", sep=" "))
   print(fits)
   # get fit information / statistics
+  options(error = dump.frames(to.file=TRUE))
   info <- fits %>%
     tidyr::unnest(fit %>% purrr::map(broom::glance))
-
   message("Extracting fit parameters")
   # get fit parameters
   params <- fits %>%
@@ -120,7 +143,7 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
   lipidCreatorParams <- params %>%
     tidyr::separate(
       combinationId,
-      c("species", "fragment", "adduct", "polarity", "ppmMassRange", "group"),
+      c("species", "fragment", "adduct", "polarity", "calculatedMass", "ppmMassRange", "group"),
       sep = "\\|",
       remove = TRUE
     ) %>% dplyr::rename(
@@ -136,6 +159,7 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
       "class",
       "frag",
       "adduct",
+      #"calculatedMass",
       "ppmMassRange",
       "group",
       "model",

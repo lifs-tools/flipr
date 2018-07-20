@@ -14,18 +14,22 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
+          "calculatedMass",
           "foundMassRange[ppm]",
           "group"
         ),
         sep = "\\|",
         remove = FALSE
       )
+    preds_from_data$fragadd <- paste(preds_from_data$fragment, preds_from_data$adduct, sep = " ")
+    preds_from_data$fragadd <-
+      factor(preds_from_data$fragadd, levels = unique(preds_from_data[order(preds_from_data$calculatedMass),]$fragadd))
     resplot <- ggplot2::ggplot() +
-      ggplot2::geom_point(ggplot2::aes(precursorCollisionEnergy, .resid, colour = fragment),
+      ggplot2::geom_point(ggplot2::aes(precursorCollisionEnergy, .resid, colour = fragadd),
                           size = 2,
                           preds_from_data) +
       ggplot2::geom_rug(
-        ggplot2::aes(precursorCollisionEnergy, .resid, colour = fragment),
+        ggplot2::aes(precursorCollisionEnergy, .resid, colour = fragadd),
         alpha = 0.5,
         sides = "b",
         preds_from_data
@@ -61,6 +65,7 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
+          "calculatedMass",
           "foundMassRange[ppm]",
           "group"
         ),
@@ -72,6 +77,9 @@ plotFits <-
 
     CI <- nlsFitPlotsOutputList$CI
     nls.tibble <- nlsFitPlotsOutputList$nls.tibble
+    nls.tibble$fragadd <- paste(nls.tibble$fragment, nls.tibble$adduct, sep = " ")
+    nls.tibble$fragadd <-
+      factor(nls.tibble$fragadd, levels = unique(nls.tibble[order(nls.tibble$calculatedMass),]$fragadd))
     nls.tibble.mean <-
       nls.tibble %>% dplyr::group_by(fragment,
                                      adduct,
@@ -81,12 +89,12 @@ plotFits <-
 
     fitplot <- ggplot2::ggplot() +
       ggplot2::geom_point(
-        ggplot2::aes(precursorCollisionEnergy, scanRelativeIntensity, colour = fragment),
+        ggplot2::aes(precursorCollisionEnergy, scanRelativeIntensity, colour = fragadd),
         size = 2,
         nls.tibble
       ) +
       ggplot2::geom_rug(
-        ggplot2::aes(precursorCollisionEnergy, scanRelativeIntensity, colour = fragment),
+        ggplot2::aes(precursorCollisionEnergy, scanRelativeIntensity, colour = fragadd),
         alpha = 0.5,
         sides = "b",
         nls.tibble
@@ -131,6 +139,7 @@ plotFits <-
           "fragment",
           "adduct",
           "polarity",
+          "calculatedMass",
           "foundMassRange[ppm]",
           "group"
         ),
@@ -138,7 +147,11 @@ plotFits <-
         remove = FALSE
       )
 
-    ciplot <- ggplot2::ggplot(params, ggplot2::aes(col = fragment)) +
+    params$fragadd <- paste(params$fragment, params$adduct, sep = " ")
+    params$fragadd <-
+      factor(params$fragadd, levels = unique(params[order(params$calculatedMass),]$fragadd))
+
+    ciplot <- ggplot2::ggplot(params, ggplot2::aes(col = fragadd)) +
       ggplot2::geom_point(ggplot2::aes(combinationId, estimate)) +
       ggplot2::facet_wrap(adduct ~ term, scale = 'free_x',labeller = ggplot2::label_wrap_gen(multi_line=FALSE), ncol = 2) +
       ggplot2::geom_errorbar(ggplot2::aes(combinationId, ymin = conf.low, ymax = conf.high)) +

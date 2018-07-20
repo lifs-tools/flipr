@@ -15,6 +15,7 @@ Imports:
     plyr,
     dplyr,
     nls.multstart,
+    robustbase,
     purrr,
     nlstools,
     tidyr,

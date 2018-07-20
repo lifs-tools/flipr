@@ -273,3 +273,39 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
   )
   plotMzVsMerrPpm
 }
+
+#' @export
+plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+
+  message(
+    "foundIntensity-scan-relative-normalized-histogram"
+  )
+  plot <-
+    ggplot2::ggplot(ggplot2::aes(
+      x = scanRelativeIntensity,
+      color = fragadd,
+      fill = fragadd
+    ), data = data) +
+    ggplot2::ggtitle(paste(
+      unique(data$species),
+      unique(data$polarity),
+      unique(data$group),
+      sep = " "
+    )) +
+    ggplot2::geom_histogram(ggplot2::aes(y =..ndensity..), alpha=0.1, binwidth = 0.01, legend = FALSE) +
+    ggplot2::geom_density(ggplot2::aes(y =..scaled..), alpha=0.05, color="darkgray", fill="darkgray", legend = FALSE) +
+    ggplot2::geom_rug(ggplot2::aes(x = scanRelativeIntensity, y = 0, color=fragadd), position = ggplot2::position_jitter(height = 0)) +
+    #ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ggplot2::xlab("Scan Relative Intensity") +
+    ggplot2::ylab("Scaled Density") +
+    ggplot2::labs(color = 'Fragment', fill = 'Fragment') +
+    ggplot2::xlim(0,1) +
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+  ggplot2::ggsave(
+    plot,
+    filename = paste0(basename, "-I-srn-histo.", plotFormat),
+    width = plotDimensions$width,
+    height = plotDimensions$height
+  )
+  plot
+}
