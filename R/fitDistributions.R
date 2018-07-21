@@ -96,7 +96,7 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
     tidyr::nest()
   # run nls fits with automatics model selection based on AIC
   message("Running nls.multstart on nls.tibble.nested")
-  ls( environment() )
+  #ls( environment() )
   fits <- nls.tibble.nested %>%
     dplyr::mutate(fit = purrr::map(
       data,
@@ -118,7 +118,7 @@ fits <- function(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TR
   message(paste("Extracting fit info for", nrow(fits), "fits", sep=" "))
   print(fits)
   # get fit information / statistics
-  options(error = dump.frames(to.file=TRUE))
+  #options(error = dump.frames(to.file=TRUE))
   info <- fits %>%
     tidyr::unnest(fit %>% purrr::map(broom::glance))
   message("Extracting fit parameters")

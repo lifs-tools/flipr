@@ -62,25 +62,6 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
       message(paste0("Writing to file ",fileName))
       if (nrow(subSetData) > 0) {
-        if(trainModel) {
-          dfl <- split(subSetData, subSetData$polarity)
-          lapply(dfl, function(splitData, splitFileName, plotFormat){
-            polarity <- unique(splitData$polarity)
-            splitFileName <- paste(splitFileName, polarity, sep="-")
-            stopifnot(length(unique(splitData$group))==1)
-            nlsFitOutputList <- flipr::fits(tibble=splitData,
-                                            outputPrefix=splitFileName,
-                                            group=unique(splitData$group)[[1]],
-                                            instrumentId=instrumentId,
-                                            skipGroupOutput=skipGroupOutput,
-                                            start_lower=start_lower,
-                                            start_upper=start_upper,
-                                            lower=lower,
-                                            upper=upper)
-            flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
-          },fileName, plotFormat)
-        }
-
 
         if(dataPlots) {
           # split dataframe based on polarity
@@ -129,6 +110,25 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
           })
         } else {
           message(paste("Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"))
+        }
+
+        if(trainModel) {
+          dfl <- split(subSetData, subSetData$polarity)
+          lapply(dfl, function(splitData, splitFileName, plotFormat){
+            polarity <- unique(splitData$polarity)
+            splitFileName <- paste(splitFileName, polarity, sep="-")
+            stopifnot(length(unique(splitData$group))==1)
+            nlsFitOutputList <- flipr::fits(tibble=splitData,
+                                            outputPrefix=splitFileName,
+                                            group=unique(splitData$group)[[1]],
+                                            instrumentId=instrumentId,
+                                            skipGroupOutput=skipGroupOutput,
+                                            start_lower=start_lower,
+                                            start_upper=start_upper,
+                                            lower=lower,
+                                            upper=upper)
+            flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
+          },fileName, plotFormat)
         }
         # charge and adduct dependency, mass error influence on intensity ?
 
