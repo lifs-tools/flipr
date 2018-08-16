@@ -20,13 +20,15 @@ option_list <- list(
 # otherwise if options not found on command line then set defaults,
 opt <- optparse::parse_args(OptionParser(option_list=option_list))
 
+minPrecursorCollisionEnergy <- as.numeric(opt$minPrecursorCollisionEnergy)
+
 # defined default search bounds for nls
 
 start_lower=c(
   meanlog = -10,
   sdlog = 0.01,
   scale = 0,
-  shift = -200
+  shift = -minPrecursorCollisionEnergy+1
 )
 start_upper = c(
   meanlog = 10,
@@ -38,7 +40,7 @@ lower = c(
   meanlog = -20,
   sdlog = 0.0001,
   scale = 0.000001,
-  shift = -1000
+  shift = -minPrecursorCollisionEnergy+1
 )
 upper = c(
   meanlog = 20,
@@ -82,7 +84,7 @@ flipFits <- flipr::flip(projectDir = opt$projectDir,
                         plotFormat = opt$plotFormat,
                         filePattern = opt$filePattern,
                         dataPlots = opt$dataPlots,
-                        minPrecursorCollisionEnergy=as.numeric(opt$minPrecursorCollisionEnergy),
+                        minPrecursorCollisionEnergy=minPrecursorCollisionEnergy,
                         start_lower=start_lower,
                         start_upper=start_upper,
                         lower=lower,
