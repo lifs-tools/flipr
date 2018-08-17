@@ -53,7 +53,7 @@ echo "APP_LICENSE         = ${APP_LICENSE}"
 echo "APP_AUTHORS         = ${APP_AUTHORS}"
 
 BUILD_TIMESTAMP="$(date --iso-8601='seconds')"
-APP_VERSION_FILE="analysis/version.R"
+APP_VERSION_FILE="version.R"
 # replace version
 echo "Writing to $APP_VERSION_FILE"
 echo "application.version = \"$APP_VERSION\"" > "$APP_VERSION_FILE"
@@ -68,11 +68,6 @@ echo ""
 
 DOCKER_REGISTRY="do1-aps-feris.isas.de:5000"
 APP_IMAGE_BASE="isas"
-
-# base image with required R / bioconductor packages
-BASE_IMAGE_NAME="suprg-base"
-BASE_IMAGE_TAG="$DOCKER_REGISTRY/$APP_IMAGE_BASE/$BASE_IMAGE_NAME:$APP_VERSION"
-BASE_IMAGE_FILE="docker/suprg-base/Dockerfile"
 
 # suprg code + shiny application
 APP_IMAGE_TAG="$DOCKER_REGISTRY/$APP_IMAGE_BASE/$APP_NAME:$APP_VERSION"
@@ -89,28 +84,15 @@ then
     [[ $? -ne 0 ]] && { echo "Git tag $APP_NAME-$APP_VERSION already exists! Please either remove it or provide a higher version!" ; exit 1; }
 fi
 
-# docker build --file docker/suprg-base/Dockerfile -t do1-aps-feris.isas.de:5000/isas/suprg-base .
-# docker build --file docker/suprg/Dockerfile -t do1-aps-feris.isas.de:5000/isas/suprg .
-# shiny application
-
-# docker build --file docker/shiny-suprg/Dockerfile -t do1-aps-feris.isas.de:5000/isas/shiny-suprg .
-# running the shiny app as a docker image, exposing port 3838 to the local host
-# docker run --rm -p 3838:3838 do1-aps-feris.isas.de:5000/isas/suprg:<tag>
-# where <tag> needs to be replaced by the actual version you want to run, e.g.
-# docker run --rm -p 3838:3838 do1-aps-feris.isas.de:5000/isas/suprg:1.0.3
-
 echo "Creating tagged docker images..."
-echo "Building $BASE_IMAGE_TAG and $APP_IMAGE_TAG..."
-docker build --file "$BASE_IMAGE_FILE" -t "$BASE_IMAGE_TAG" . && docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
+echo "Building $APP_IMAGE_TAG..."
+docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
 
 if [ $PUSH ];
 then
     echo "Pushing to git..."
     git push
     echo "Pushing to docker registry..."
-    docker push "$BASE_IMAGE_TAG" && docker push "$APP_IMAGE_TAG"
+    docker push "$APP_IMAGE_TAG"
 fi
-echo -e "You can run the image locally with the following command: "
-echo -e "docker run --rm -p 3838:3838 $APP_IMAGE_TAG"
-echo -e "Open your browser at localhost:3838/$APP_NAME"
 echo "Done!"

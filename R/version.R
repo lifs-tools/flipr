@@ -1,0 +1,5 @@
+application.version = "1.0.9"
+application.build.timestamp = "2017-09-15T10:35:28+02:00"
+application.name= "suprg"
+application.authors = "Grischa Toedt, Chi Ngyuen, Dominik Kopczyinsky, Canan Has, Nils Hoffmann"
+application.license = "UNDEFINED"
