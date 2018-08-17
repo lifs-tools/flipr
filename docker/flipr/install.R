@@ -2,7 +2,7 @@ source("https://bioconductor.org/biocLite.R")
 biocLite()
 library(BiocInstaller) # shouldn't be necessary
 
-pkgs <- c("uuid","optparse","devtools","dplyr")
+pkgs <- c("uuid","optparse","devtools","dplyr","testthat","xml2")
 
 ap.db <- available.packages(contrib.url(biocinstallRepos()))
 ap <- rownames(ap.db)
