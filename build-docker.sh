@@ -69,9 +69,9 @@ echo ""
 DOCKER_REGISTRY="do1-aps-feris.isas.de:5000"
 APP_IMAGE_BASE="isas"
 
-# suprg code + shiny application
+# flipr code 
 APP_IMAGE_TAG="$DOCKER_REGISTRY/$APP_IMAGE_BASE/$APP_NAME:$APP_VERSION"
-APP_IMAGE_FILE="docker/suprg/Dockerfile"
+APP_IMAGE_FILE="docker/flipr/Dockerfile"
 
 echo "Adding and committing updated version file"
 git add "$APP_VERSION_FILE" && \
