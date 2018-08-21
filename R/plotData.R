@@ -71,7 +71,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Absolute Intensity [a.u.]") +
-    ggplot2::xlab("Precursor Collision Energy [eV]") +
+    ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
   ggplot2::ggsave(
@@ -104,7 +104,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Scan Relative Intensity") +
-    ggplot2::xlab("Precursor Collision Energy [eV]") +
+    ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
   ggplot2::ggsave(
@@ -139,7 +139,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::geom_area(position = "identity", alpha = 0.3) +
     ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Scan Relative Intensity") +
-    ggplot2::xlab("Precursor Collision Energy [eV]") +
+    ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
     ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
   ggplot2::ggsave(
@@ -173,7 +173,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Mass Error [ppm]") +
-    ggplot2::xlab("Precursor Collision Energy [eV]") +
+    ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
   ggplot2::ggsave(

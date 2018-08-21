@@ -127,7 +127,7 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
                                             start_upper=start_upper,
                                             lower=lower,
                                             upper=upper)
-            flipr::plotFits(nlsFitOutputList, splitFileName, format=plotFormat)
+            flipr::plotFits(nlsFitOutputList, splitFileName, plotFormat=plotFormat)
           },fileName, plotFormat)
         }
         # charge and adduct dependency, mass error influence on intensity ?
