@@ -1,6 +1,6 @@
 #' @importFrom magrittr %>%
 #' @export
-plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationId, outputPrefix, plotFormat="pdf") {
+plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationId, outputPrefix, plotFormat="pdf", color_scale = ggplot2::scale_colour_hue()) {
 
   #separate out columns that are united in combinationId
   params <-
@@ -33,7 +33,8 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
                   caption = "Conf.Int. between [2.5%, 97.5%]",
                   colour = 'Fragment') +
     ggplot2::xlab('Fragment') +
-    ggplot2::ylab('Log-Normal Parameter Estimate')
+    ggplot2::ylab('Log-Normal Parameter Estimate') +
+    color_scale
   ggplot2::ggsave(
     ciplot,
     filename = paste0(outputPrefix, "-confint.", plotFormat),
@@ -44,7 +45,7 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
 
 #' @importFrom magrittr %>%
 #' @export
-plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="pdf") {
+plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="pdf", color_scale = ggplot2::scale_colour_hue()) {
 
   #predictions plot
   preds <-
@@ -114,7 +115,8 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::labs(title = paste0(unique(preds$species)," ",unique(preds$group)), colour = 'Fragment') +
     ggplot2::ylab('Relative Intensity') +
-    ggplot2::xlab('Collision Energy [eV]')
+    ggplot2::xlab('Collision Energy [eV]') +
+    color_scale
   #theme(legend.position = c(0.9, 0.15))
   ggplot2::ggsave(
     fitplot,
@@ -126,7 +128,7 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
 
 #' @importFrom magrittr %>%
 #' @export
-plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf") {
+plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf", color_scale = ggplot2::scale_colour_hue()) {
   #Residualplot
   preds_from_data <-
     nlsFitPlotsOutputList$preds_from_data %>% tidyr::separate(
@@ -169,7 +171,8 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf
     ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)), colour = 'Fragment') +
     ggplot2::ylab(expression(paste("Residuals (", Delta,"(",y,",",yhat,")", ")",sep = " "))) +
     ggplot2::xlab('Collision Energy [eV]') +
-    ggplot2::scale_y_continuous(limits = c(-0.1, 0.1))
+    ggplot2::scale_y_continuous(limits = c(-0.1, 0.1)) +
+    color_scale
   # +
   #theme(legend.position = c(0.9, 0.15))
   ggplot2::ggsave(
@@ -185,8 +188,8 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf
 plotFits <-
   function(nlsFitPlotsOutputList,
            outputPrefix,
-           plotFormat = "pdf") {
-    plotResiduals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat)
-    plotPredictedFits(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat)
-    plotParameterConfidenceIntervals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, combinationId=combinationId, outputPrefix=outputPrefix, plotFormat=plotFormat)
+           plotFormat = "pdf", color_scale = ggplot2::scale_colour_hue()) {
+    plotResiduals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
+    plotPredictedFits(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
+    plotParameterConfidenceIntervals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, combinationId=combinationId, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
   }

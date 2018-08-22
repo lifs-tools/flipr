@@ -58,7 +58,10 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
       dataIndex <- unique(subSetData$originId)[[1]]
       print(dataIndex)
       message(paste0("Processing data from ", unique(subSetData$origin)))
-
+      subSetData$fragadd <- paste(subSetData$fragment, subSetData$adduct, sep = " ")
+      subSetData$fragadd <-
+        factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass),]$fragadd))
+      color_scale <- ggplot2::scale_colour_hue(name="Fragment", limits=as.character(levels(subSetData$fragadd)), aesthetics = c("colour", "fill"))
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
       message(paste0("Writing to file ",fileName))
       if (nrow(subSetData) > 0) {
@@ -100,13 +103,13 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
             }
             splitData.noNAs <- splitData[!is.na(splitData$foundMass), ]
 
-            flipr::plotPrecCollEnergyVsFoundIntensity(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotPrecCollEnergyVsMassErrorPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotMassDensityDistribution(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotMzVsMerrPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
-            flipr::plotScanRelativeIntensityHistogram(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r)
+            flipr::plotPrecCollEnergyVsFoundIntensity(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotPrecCollEnergyVsMassErrorPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotMassDensityDistribution(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotMzVsMerrPpm(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
+            flipr::plotScanRelativeIntensityHistogram(splitData.noNAs, fileName, plotFormat=plotFormat, plotDimensions=a4r, color_scale=color_scale)
           })
         } else {
           message(paste("Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"))
@@ -127,7 +130,7 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
                                             start_upper=start_upper,
                                             lower=lower,
                                             upper=upper)
-            flipr::plotFits(nlsFitOutputList, splitFileName, plotFormat=plotFormat)
+            flipr::plotFits(nlsFitOutputList, splitFileName, plotFormat=plotFormat, color_scale=color_scale)
           },fileName, plotFormat)
         }
         # charge and adduct dependency, mass error influence on intensity ?

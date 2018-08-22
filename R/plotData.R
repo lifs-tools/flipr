@@ -1,5 +1,5 @@
 #' @export
-plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   rawTicVsTotalIonCurrentPlot <-
     ggplot2::qplot(
       x = rawTic,
@@ -10,7 +10,8 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
       main = paste(unique(data$species), unique(data$polarity), unique(data$group), sep = " ")
     )  + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
-    ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]")
+    ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]") +
+    color_scale
   ggplot2::ggsave(
     rawTicVsTotalIonCurrentPlot,
     filename = paste0(basename, "-rawTic-vs-Tic.", plotFormat),
@@ -19,7 +20,7 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
   )
 }
 #' @export
-plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   fpbPlot <-
     ggplot2::qplot(
       x = fragadd,
@@ -38,7 +39,8 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
                              color = fragadd
                            ),
                            data = data,
-                           alpha = 0.1)
+                           alpha = 0.1) +
+    color_scale
   ggplot2::ggsave(
     fpbPlot,
     filename = paste0(basename, "-frag-ppm-box.", plotFormat),
@@ -48,7 +50,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
   fpbPlot
 }
 #' @export
-plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-foundIntensity")
 
   pceFiPlot <-
@@ -73,7 +75,8 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
     ggplot2::ylab("Absolute Intensity [a.u.]") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    color_scale
   ggplot2::ggsave(
     pceFiPlot,
     filename = paste0(basename, "-precCE-vs-I.", plotFormat),
@@ -82,7 +85,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
   )
 }
 #' @export
-plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-foundIntensity-scan-relative-normalized")
   precCeVsIsrnPlot <-
     ggplot2::qplot(
@@ -106,7 +109,8 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1) +
+    color_scale
   ggplot2::ggsave(
     precCeVsIsrnPlot,
     filename = paste0(basename, "-precCE-vs-I-srn.", plotFormat),
@@ -116,7 +120,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
   precCeVsIsrnPlot
 }
 #' @export
-plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
   message(
     "precursorCollisionEnergy-vs-foundIntensity-scan-relative-normalized-overlay"
@@ -141,7 +145,8 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
-    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1)
+    ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1) +
+    color_scale
   ggplot2::ggsave(
     precCeVsIsrnOverlayPlot,
     filename = paste0(basename, "-precCE-vs-I-srn-overlay.", plotFormat),
@@ -151,7 +156,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
   precCeVsIsrnOverlayPlot
 }
 #' @export
-plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-mass-error-ppm")
   precCeVsMerrPpmmPlot <-
     ggplot2::qplot(
@@ -175,7 +180,8 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
     ggplot2::ylab("Mass Error [ppm]") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    color_scale
   ggplot2::ggsave(
     precCeVsMerrPpmmPlot,
     filename = paste0(basename, "-precCE-vs-merr-ppm.", plotFormat),
@@ -185,7 +191,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
   precCeVsMerrPpmmPlot
 }
 #' @export
-plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLevels, plotDimensions=list(width=11.69, height=8.27)) {
+plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLevels, plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("m/z density distribution")
   stopifnot(!missing(data))
   stopifnot(!missing(basename))
@@ -231,7 +237,8 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
     ggplot2::facet_wrap(~ `foundMassRange[ppm]`, nrow = nppms, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
     ggplot2::xlab("Fragment m/z") +
     ggplot2::ylab("Normalized Count") +
-    ggplot2::labs(colour = 'Fragment', fill = 'Fragment')
+    ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
+    color_scale
   ggplot2::ggsave(
     mddPlot,
     filename = paste0(basename, "-mass-dens-distr.", plotFormat),
@@ -241,7 +248,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
   mddPlot
 }
 #' @export
-plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   # plot m/z vs mass error
   message("m/z-vs-mass-error-ppm")
   mzVsMerrPpmPlot <- ggplot2::qplot(
@@ -264,7 +271,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
       ggplot2::aes(x = foundMass, y = `foundMassError[ppm]`, color = fragadd),
       data = data,
       alpha = 0.1
-    )
+    ) + color_scale
   ggplot2::ggsave(
     mzVsMerrPpmPlot,
     filename = paste0(basename, "-mz-vs-merr-ppm.", plotFormat),
@@ -275,7 +282,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
 }
 
 #' @export
-plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27)) {
+plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
   message(
     "foundIntensity-scan-relative-normalized-histogram"
@@ -299,6 +306,7 @@ plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png",
     ggplot2::xlab("Scan Relative Intensity") +
     ggplot2::ylab("Scaled Density") +
     ggplot2::labs(color = 'Fragment', fill = 'Fragment') +
+    color_scale +
     ggplot2::xlim(0,1) +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
   ggplot2::ggsave(
