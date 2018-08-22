@@ -61,6 +61,9 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
       subSetData$fragadd <- paste(subSetData$fragment, subSetData$adduct, sep = " ")
       subSetData$fragadd <-
         factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass),]$fragadd))
+      message(paste0("Using Fragment+Adduct levels ", paste0(levels(subSetData$fragadd), collapse = " | ")))
+      message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$calculatedMass), collapse = " | "))
+      message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$fragadd)))
       color_scale <- ggplot2::scale_colour_hue(name="Fragment", limits=as.character(levels(subSetData$fragadd)), aesthetics = c("colour", "fill"))
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
       message(paste0("Writing to file ",fileName))
