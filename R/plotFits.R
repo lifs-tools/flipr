@@ -1,3 +1,4 @@
+#' Plots the number of data samples for each combinationId.
 #' @param nlsFitPlotsOutputList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
