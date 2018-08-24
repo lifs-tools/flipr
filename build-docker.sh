@@ -86,13 +86,13 @@ fi
 
 echo "Creating tagged docker images..."
 echo "Building $APP_IMAGE_TAG..."
-docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
+/usr/bin/docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
 
 if [ $PUSH ];
 then
     echo "Pushing to git..."
     git push
     echo "Pushing to docker registry..."
-    docker push "$APP_IMAGE_TAG"
+    /usr/bin/docker push "$APP_IMAGE_TAG"
 fi
 echo "Done!"
