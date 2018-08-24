@@ -19,6 +19,10 @@ case $i in
     TAG=true
     shift # past argument with no value
     ;;
+    --docker)
+    DOCKER=true
+    shift # past argument with no value
+    ;;
     --help|-?)
     HELP=true
     shift # past argument with no value
@@ -37,6 +41,7 @@ function printHelp {
   echo -e "\t-v=<VERSION> | --version=<VERSION>\t Use <VERSION> as the current version. (mandatory)"
   echo -e "\t--push \t Push the git tag and docker image to the remote repository and registry."
   echo -e "\t--tag  \t Tag the current build, both in git and in docker."
+  echo -e "\t--docker \t Build the docker image and push it if push is also set."
   echo -e "\t-? | --help \t Print this help."
   exit 1
 }
@@ -84,15 +89,21 @@ then
     [[ $? -ne 0 ]] && { echo "Git tag $APP_NAME-$APP_VERSION already exists! Please either remove it or provide a higher version!" ; exit 1; }
 fi
 
-echo "Creating tagged docker images..."
-echo "Building $APP_IMAGE_TAG..."
-/usr/bin/docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
+if [ $DOCKER ];
+then
+  echo "Creating tagged docker images..."
+  echo "Building $APP_IMAGE_TAG..."
+  docker build --file "$APP_IMAGE_FILE" -t "$APP_IMAGE_TAG" .
+fi
 
 if [ $PUSH ];
 then
     echo "Pushing to git..."
     git push
-    echo "Pushing to docker registry..."
-    /usr/bin/docker push "$APP_IMAGE_TAG"
+    if [ $DOCKER ];
+    then
+      echo "Pushing to docker registry..."
+      docker push "$APP_IMAGE_TAG"
+    fi
 fi
 echo "Done!"
