@@ -1,7 +1,24 @@
+
+#' Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
+#' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
+#' Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.
+#'
+#' @param projectDir the path to the project directory containing the '_fip.tsv' files as input.
+#' @param plotFormat the plot format, as supported by \code{ggplot2::ggsave}.
+#' @param filePattern the file pattern for 'fip' files.
+#' @param dataPlots whether data plots (diagnostics) should be created.
+#' @param minPrecursorCollisionEnergy the minimum precursor collision energy to consider for model training.
+#' @param start_lower the lower bound to start the parameter grid search.
+#' @param start_upper the upper bound to start the parameter grid search.
+#' @param lower the lower bound for the parameter grid search.
+#' @param upper the upper bound for the parameter grid search.
+#' @param trainModel whether the model should be calculated.
+#' @param minSamplesPerCombinationId the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
+#' @return The list of fit tables which includes in named element \code{name} the input file name for the model data, in named element \code{fits} a list with the named elements \code{fits} (nonlinear fits), \code{params} (parameters), \code{CI} (confidence intervals for params), \code{preds} (immediate predictions), \code{nls.tibble.unfiltered} (unfiltered input data), \code{nls.tibble} (data for calculation of fits), and \code{preds_from_data} (predictions from equidistantly resampled x-value range).
 #' @importFrom magrittr %>%
 #' @export
 flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", dataPlots=TRUE, minPrecursorCollisionEnergy=0,
-start_lower, start_upper, lower, upper, trainModel=FALSE) {
+start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinationId=50) {
   setwd(projectDir)
   fip_files <-
     list.files(path = projectDir,
@@ -132,7 +149,8 @@ start_lower, start_upper, lower, upper, trainModel=FALSE) {
                                             start_lower=start_lower,
                                             start_upper=start_upper,
                                             lower=lower,
-                                            upper=upper)
+                                            upper=upper,
+                                            minSamplesPerCombinationId=minSamplesPerCombinationId)
             flipr::plotFits(nlsFitOutputList, splitFileName, plotFormat=plotFormat, color_scale=color_scale)
           },fileName, plotFormat)
         }

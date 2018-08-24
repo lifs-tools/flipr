@@ -1,33 +1,42 @@
-a4 <- list(width = 8.27, height = 11.69)
-a4r <- list(width = 11.69, height = 8.27)
+#' #huber loss function
+#' #' @export
+#' huberLossPw <- function(x, hgamma = 0.05) {
+#'   stopifnot(is.double(x))
+#'   if (abs(x) <= hgamma) {
+#'     0.5 * (x) ^ 2
+#'   } else {
+#'     hgamma * abs(x) - ((hgamma ^ 2) / 2)
+#'   }
+#' }
+#'
+#' #' @export
+#' huberLoss <- function(x, hgamma = 0.05) {
+#'   sapply(x, huberLossPw, hgamma = hgamma)
+#' }
+#'
+#' huberLoss2 <- function(x1, x2, hgamma = 0.05) {
+#'   huberLoss(x1 - x2, hgamma = hgamma)
+#' }
 
-#huber loss function
-#' @export
-huberLossPw <- function(x, hgamma = 0.05) {
-  stopifnot(is.double(x))
-  if (abs(x) <= hgamma) {
-    0.5 * (x) ^ 2
-  } else {
-    hgamma * abs(x) - ((hgamma ^ 2) / 2)
-  }
-}
-
-#' @export
-huberLoss <- function(x, hgamma = 0.05) {
-  sapply(x, huberLossPw, hgamma = hgamma)
-}
-
-huberLoss2 <- function(x1, x2, hgamma = 0.05) {
-  huberLoss(x1 - x2, hgamma = hgamma)
-}
-
+#' Mode function of shifted \code{dlnorm}.
+#' @param meanlog the \code{meanlog} argument for \code{dlnorm}.
+#' @param sdlog the \code{sdlog} argument for \code{dlnorm}
+#' @param shift the \code{shift} parameter modulates the shift of the log-normal density function or 0.
+#' @return the value of the mode function for the given parameters.
 #' @export
 dlnormMode <- function(meanlog, sdlog, shift = 0) {
   exp(meanlog - (sdlog ^ 2)) - shift
 }
 
-#parameterized version of log-normal density function with additional "norm" expression and "scale" factor.
-#both are multiplied with the actual log-normal density kernel.
+#' Parameterized version of the log-normal density function \code{dlnorm} with additional "norm" expression and "scale" factor.
+#' Both are multiplied with the actual log-normal density kernel.
+#'
+#' @param x the \code{x} argument for the log-normal density function
+#' @param meanlog the \code{meanlog} argument for \code{dlnorm} or 0.
+#' @param sdlog the \code{sdlog} argument for \code{dlnorm} or 1.
+#' @param scale the \code{scale} parameter modulates the height of the log-normal density function or 1.
+#' @param shift the \code{shift} parameter modulates the shift of the log-normal density function on the x-axis or 0.
+#' @return The value of the log-normal density function for \code{x} and all parameters.
 #' @export
 dlnormPar <-
   function(x,
@@ -42,6 +51,12 @@ dlnormPar <-
                                                sdlog = sdlog,
                                                log = FALSE)
   }
+
+#' Selects \code{combinationId}, \code{precursorCollisionEnergy} and \code{scanRelativeIntenty} to write to file.
+#' @param tibble the data frame / tibble to write.
+#' @param outputPrefix the output prefix for the file.
+#' @param skip if true, skip writing.
+#' @return the input tibble.
 #' @importFrom magrittr %>%
 writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
   if (skip == FALSE) {
@@ -57,6 +72,11 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
   return(tibble)
 }
 
+#' Add parameter for instrumentId (cvTerm)  and output format suitable
+#' for LipidCreator import.
+#' @param params the fit parameters to modify.
+#' @param instrumentId the instrumentId cvTerm to use.
+#' @return a tibble in the correct format for LipidCreator with ParKey and ParValue.
 #' @importFrom magrittr %>%
 createLipidCreatorParameters <-
   function(params, instrumentId = "MS:XXXXXX") {
@@ -103,7 +123,8 @@ createLipidCreatorParameters <-
                       sep = "\\|",
                       remove = TRUE) %>%
       dplyr::rename(class = species, frag = fragment) %>%
-      dplyr::mutate(instrument = instrumentId, ppmMassRange = as.numeric(ppmMassRange)) %>%
+      dplyr::mutate(instrument = instrumentId,
+                    ppmMassRange = as.numeric(ppmMassRange)) %>%
       dplyr::select(
         "instrument",
         "class",
@@ -126,6 +147,22 @@ createLipidCreatorParameters <-
     return(lipidCreatorParams)
   }
 
+#' Calculates the nonlinear fits for the given tibble. Data will be grouped by
+#' combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
+#' Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
+#' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
+#' Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.
+#'
+#' @param tibble the data tibble containing fragment data.
+#' @param outputPrefix the output prefix for the file.
+#' @param group the group that this data belongs to.
+#' @param instrumentId the instrumentId of this data.
+#' @param skipGroupOutput whether to skip writing of grouping information (for debugging).
+#' @param start_lower the lower bound to start the parameter grid search.
+#' @param start_upper the upper bound to start the parameter grid search.
+#' @param lower the lower bound for the parameter grid search.
+#' @param upper the upper bound for the parameter grid search.
+#' @param minSamplesPerCombinationId the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @importFrom magrittr %>%
 #' @export
 fits <-
@@ -137,7 +174,8 @@ fits <-
            start_lower,
            start_upper,
            lower,
-           upper) {
+           upper,
+           minSamplesPerCombinationId = 50) {
     message(
       paste(
         "Fitting scanRelativeIntensities of fragments for:",
@@ -167,7 +205,23 @@ fits <-
     message("Creating nls.tibble")
     nls.tibble <-
       nls.tibbleId %>% dplyr::group_by(., combinationId) %>% dplyr::mutate(samplesPerCombinationId = dplyr::n()) %>% dplyr::do(writeGroup(., outputPrefix, skip =
+
                                                                                                                                             skipGroupOutput))
+    message("Writing unfiltered data before fit")
+    nls.tibble.unfiltered <- nls.tibble
+    combinations.unfiltered <- length(unique(nls.tibble.unfiltered$combinationId))
+    readr::write_tsv(nls.tibble.unfiltered, path = file.path(paste0(
+      outputPrefix, "-data-for-fit-unfiltered.tsv"
+    )))
+
+    nls.tibble <-
+      nls.tibble %>% dplyr::filter(samplesPerCombinationId >= minSamplesPerCombinationId)
+    nrow.removed <- combinations.unfiltered - length(unique(nls.tibble$combinationId))
+    message(paste("Filtered", nrow.removed, "cases from data where samplesPerCombinationId <",minSamplesPerCombinationId))
+    message(paste("Remaining data rows:", nrow(nls.tibble)))
+    if(nrow(nls.tibble)==0) {
+      stop("No rows remaining for model calculation after filtering!")
+    }
     message("Writing data for fit")
     readr::write_tsv(nls.tibble, path = file.path(paste0(outputPrefix, "-data-for-fit.tsv")))
 
@@ -296,6 +350,7 @@ fits <-
       params = params,
       CI = CI,
       preds = preds,
+      nls.tibble.unfiltered = nls.tibble.unfiltered,
       nls.tibble = nls.tibble,
       preds_from_data = preds_from_data
     )

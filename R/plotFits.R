@@ -1,6 +1,48 @@
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @importFrom magrittr %>%
 #' @export
-plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationId, outputPrefix, plotFormat="pdf", color_scale = ggplot2::scale_colour_hue()) {
+plotNumberOfSamplesPerCombinationId <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
+
+    data <- nlsFitPlotsOutputList$nls.tibble.unfiltered
+    data$fragadd <- paste(data$fragment, data$adduct, sep = " ")
+    data$fragadd <-
+      factor(data$fragadd, levels = unique(data[order(data$calculatedMass),]$fragadd))
+    plot <- ggplot2::ggplot(data) +
+      ggplot2::geom_boxplot(ggplot2::aes(x=combinationId, y=samplesPerCombinationId, colour=combinationId)) +
+      ggplot2::facet_wrap(
+        fragadd + `foundMassRange[ppm]` ~ polarity,
+        labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
+        ncol = 6
+      ) +
+      ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
+      ggplot2::labs(title = paste0(unique(data$species)," ",unique(data$group)),
+                    caption = "Number of samples for model training",
+                    colour = 'Fragment') +
+      ggplot2::coord_flip() +
+      ggplot2::xlab('Fragment') +
+      ggplot2::ylab('Number of Samples') +
+      color_scale
+    ggplot2::ggsave(
+      plot,
+      filename = paste0(outputPrefix, "-samples-per-combinationId.", plotFormat),
+      width = plotDimensions$width,
+      height = plotDimensions$height
+    )
+}
+#' Plots the confidence intervals for the parameters used for model optimization.
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param combinationId the combinationId for the case to plot.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @importFrom magrittr %>%
+#' @export
+plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationId, outputPrefix, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
   #separate out columns that are united in combinationId
   params <-
@@ -43,9 +85,15 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
   )
 }
 
+#' Plots the predicted fits.
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @importFrom magrittr %>%
 #' @export
-plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="pdf", color_scale = ggplot2::scale_colour_hue()) {
+plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
   #predictions plot
   preds <-
@@ -126,9 +174,15 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
   )
 }
 
+#' Plots the residuals between predicted and measured values.
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @importFrom magrittr %>%
 #' @export
-plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf", color_scale = ggplot2::scale_colour_hue()) {
+plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   #Residualplot
   preds_from_data <-
     nlsFitPlotsOutputList$preds_from_data %>% tidyr::separate(
@@ -183,13 +237,20 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "pdf
   )
 }
 
+#' Plots information about the fits (residuals, predictions, confidence intervals).
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @importFrom magrittr %>%
 #' @export
 plotFits <-
   function(nlsFitPlotsOutputList,
            outputPrefix,
-           plotFormat = "pdf", color_scale = ggplot2::scale_colour_hue()) {
-    plotResiduals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
-    plotPredictedFits(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
-    plotParameterConfidenceIntervals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, combinationId=combinationId, outputPrefix=outputPrefix, plotFormat=plotFormat, color_scale=color_scale)
+           plotFormat = "png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
+    plotNumberOfSamplesPerCombinationId(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
+    plotResiduals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
+    plotPredictedFits(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
+    plotParameterConfidenceIntervals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, combinationId=combinationId, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
   }

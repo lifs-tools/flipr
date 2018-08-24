@@ -1,3 +1,6 @@
 importFrom(magrittr,"%>%", "%<>%", "%T>%")
 importFrom(broom, "augment")
+importFrom("stats", "AIC", "as.formula", "BIC", "dlnorm", "logLik",
+             "na.omit", "residuals", "sd", "sigma", "var")
+importFrom("utils", "data")
 exportPattern("^[[:alpha:]]+")

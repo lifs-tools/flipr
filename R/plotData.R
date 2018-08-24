@@ -1,3 +1,10 @@
+#' Plots the raw, non-normalized TIC values.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   rawTicVsTotalIonCurrentPlot <-
@@ -10,6 +17,7 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
       main = paste(unique(data$species), unique(data$polarity), unique(data$group), sep = " ")
     )  + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]") +
     color_scale
   ggplot2::ggsave(
@@ -19,6 +27,14 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
     height = plotDimensions$height
   )
 }
+
+#' Plots a PPM deviation boxplot for all fragments.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   fpbPlot <-
@@ -30,6 +46,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
       geom = c("violin"),
       main = paste(unique(data$species), unique(data$polarity), unique(data$group), sep = " ")
     ) + ggplot2::labs(colour = 'Fragment') +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::facet_wrap( ~ data$`foundMassRange[ppm]`, ncol =
                            6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylab(expression(paste(
                              Delta, " of calculated and found m/z", sep = " "
@@ -49,6 +66,14 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
   )
   fpbPlot
 }
+
+#' Plots precursor collision energy vs found raw intensity.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-foundIntensity")
@@ -72,6 +97,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
       se = TRUE,
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::ylab("Absolute Intensity [a.u.]") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
@@ -84,6 +110,14 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
     height = plotDimensions$height
   )
 }
+
+#' Plots precursor collision energy vs. total scan intensity normalized relative fragment intensity in separate panels.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-foundIntensity-scan-relative-normalized")
@@ -106,6 +140,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
       se = TRUE,
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::ylab("Scan Relative Intensity") +
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
@@ -119,6 +154,14 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
   )
   precCeVsIsrnPlot
 }
+
+#' Plots precursor collision energy vs. total scan intensity normalized relative fragment intensity overlaid on one panel.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
@@ -146,6 +189,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
     ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     color_scale
   ggplot2::ggsave(
     precCeVsIsrnOverlayPlot,
@@ -155,6 +199,14 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
   )
   precCeVsIsrnOverlayPlot
 }
+
+#' Plots the precursor collision energy vs. the fragment mass error in ppm.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("precursorCollisionEnergy-vs-mass-error-ppm")
@@ -181,6 +233,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
     ggplot2::xlab("Collision Energy [eV]") +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     color_scale
   ggplot2::ggsave(
     precCeVsMerrPpmmPlot,
@@ -190,6 +243,14 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
   )
   precCeVsMerrPpmmPlot
 }
+
+#' Plots the mass density distribution.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLevels, plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("m/z density distribution")
@@ -235,6 +296,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
       linetype = 2
     ) +
     ggplot2::facet_wrap(~ `foundMassRange[ppm]`, nrow = nppms, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::xlab("Fragment m/z") +
     ggplot2::ylab("Normalized Count") +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
@@ -247,6 +309,13 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLe
   )
   mddPlot
 }
+#' Plots m/z vs. the mass error in ppm.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   # plot m/z vs mass error
@@ -267,6 +336,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
     ggplot2::xlab("Fragment m/z") +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::geom_jitter(
       ggplot2::aes(x = foundMass, y = `foundMassError[ppm]`, color = fragadd),
       data = data,
@@ -280,7 +350,13 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
   )
   plotMzVsMerrPpm
 }
-
+#' Plots the scan relative intensity histogram.
+#' @param data the FIP data to plot.
+#' @param basename the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @export
 plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
 
@@ -308,7 +384,8 @@ plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png",
     ggplot2::labs(color = 'Fragment', fill = 'Fragment') +
     color_scale +
     ggplot2::xlim(0,1) +
-    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE))
+    ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica')
   ggplot2::ggsave(
     plot,
     filename = paste0(basename, "-I-srn-histo.", plotFormat),
