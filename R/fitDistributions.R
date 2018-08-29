@@ -285,7 +285,7 @@ fits <-
     # TODO additional renormalization after grouping for each "species", adduct, polarity and ppmMassRange -> scale needs to fall into the range of 0-1
     message("Writing LipidCreator parameters")
     readr::write_csv(lipidCreatorParams, path = file.path(paste0(
-      outputPrefix, "-lipidcreator-parameters.tsv"
+      outputPrefix, "-lipidcreator-parameters.csv"
     )))
 
     # merge parameters and CI estimates
