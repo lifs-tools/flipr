@@ -1,4 +1,8 @@
-# FlipR Package #
+# FlipR <img src="man/figures/flipr-site.png" align="right" /> #
+
+FlipR is a package to help in optimal collision energy selection for molecules based on MS2 data that was gathered with increasing collision energies. It therefor fits a parameterized log-normal distribution to the relative intensity of one particular fragment ion (incl. adduct) over the range of collision energies. We use the nls.multstart package to select a model that minimizes the AIC value within a given range of parameters that are used in a grid search, starting in an initially user-determined range. The log-normal distribution is able to adapt quite well to different fragments and their distribution profiles. Some cases though seemingly show different fragmentation behaviour that is usually visible through a less steep decline (flatter curve) of the scan relative intensity over the range of fragmentation energies.
+
+It has been tested on Thermo QExactive HF and Waters QTof instruments.
 
 ## Installation ##
 
@@ -31,3 +35,7 @@ flipr uses packrat to manage its dependencies in a clean state during developmen
    library(devtools)
    install_local("/path/to/flipr/packrat/lib/x86_64-pc-linux-gnu/3.4.4/flipr/")
 ```
+
+---
+
+The flipr logo is based on the dolphin logo from https://www.creativetail.com/40-free-flat-animal-icons/. The original is licensed under the Creative Commons Attribution 4.0 International license. See their licensing terms: https://www.creativetail.com/licensing/

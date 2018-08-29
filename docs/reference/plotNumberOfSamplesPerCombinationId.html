@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plots a PPM deviation boxplot for all fragments. — plotFragmentPpmBoxplot • flipr</title>
+<title>Plots the number of data samples for each combinationId. — plotNumberOfSamplesPerCombinationId • flipr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Plots a PPM deviation boxplot for all fragments. — plotFragmentPpmBoxplot" />
+<meta property="og:title" content="Plots the number of data samples for each combinationId. — plotNumberOfSamplesPerCombinationId" />
 
-<meta property="og:description" content="Plots a PPM deviation boxplot for all fragments." />
+<meta property="og:description" content="Plots the number of data samples for each combinationId." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,30 +92,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plots a PPM deviation boxplot for all fragments.</h1>
+    <h1>Plots the number of data samples for each combinationId.</h1>
     
-    <div class="hidden name"><code>plotFragmentPpmBoxplot.Rd</code></div>
+    <div class="hidden name"><code>plotNumberOfSamplesPerCombinationId.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Plots a PPM deviation boxplot for all fragments.</p>
+    <p>Plots the number of data samples for each combinationId.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plotFragmentPpmBoxplot</span>(<span class='no'>data</span>, <span class='no'>basename</span>, <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"png"</span>,
-  <span class='kw'>plotDimensions</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>11.69</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>8.27</span>),
-  <span class='kw'>color_scale</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/scale_hue'>scale_colour_hue</a></span>())</pre>
+    <pre class="usage"><span class='fu'>plotNumberOfSamplesPerCombinationId</span>(<span class='no'>nlsFitPlotsOutputList</span>, <span class='no'>outputPrefix</span>,
+  <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"png"</span>, <span class='kw'>plotDimensions</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>11.69</span>, <span class='kw'>height</span> <span class='kw'>=</span>
+  <span class='fl'>8.27</span>), <span class='kw'>color_scale</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/ggplot2/topics/scale_hue'>scale_colour_hue</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>the FIP data to plot.</p></td>
+      <th>nlsFitPlotsOutputList</th>
+      <td><p>the FIP fits output list.</p></td>
     </tr>
     <tr>
-      <th>basename</th>
+      <th>outputPrefix</th>
       <td><p>the basename (identifying a case) for the plot.</p></td>
     </tr>
     <tr>
@@ -132,19 +132,13 @@
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the ggplot object.</p>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>
