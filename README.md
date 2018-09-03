@@ -8,8 +8,28 @@ It has been tested on Thermo QExactive HF and Waters QTof instruments.
 
 Install devtools:
 
+For Ubuntu, please install the following libraries:
+
+```
+  sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+```
+
+Your will require R>=3.4.4 for flipr. Start administrator's R session as follows, to install the packages into the site-wide (all users) library:
+
+```
+  sudo -i R
+```
+
+Install devtools and wait until installation has finished:
+
 ```R
   install.packages("devtools")
+```
+
+Load the devtools library:
+
+```R
+  library(devtools)
 ```
   
 Run

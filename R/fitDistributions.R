@@ -234,7 +234,7 @@ fits <-
     fits <- nls.tibble.nested %>%
       dplyr::mutate(fit = purrr::map(
         data,
-        ~ flipr::nls_multstart2(
+        ~ nls.multstart::nls_multstart(
           scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
           data = .x,
           iter = 500,
