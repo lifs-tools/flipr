@@ -81,8 +81,8 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
   ggplot2::ggsave(
     ciplot,
     filename = paste0(outputPrefix, "-confint.", plotFormat),
-    width = a4r$width,
-    height = a4r$height
+    width = plotDimensions$width,
+    height = plotDimensions$height
   )
 }
 
@@ -170,8 +170,8 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
   ggplot2::ggsave(
     fitplot,
     filename = paste0(outputPrefix, "-fit.", plotFormat),
-    width = a4r$width,
-    height = a4r$height
+    width = plotDimensions$width,
+    height = plotDimensions$height
   )
 }
 
@@ -233,8 +233,8 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png
   ggplot2::ggsave(
     resplot,
     filename = paste0(outputPrefix, "-residuals.", plotFormat),
-    width = a4r$width,
-    height = a4r$height
+    width = plotDimensions$width,
+    height = plotDimensions$height
   )
 }
 
