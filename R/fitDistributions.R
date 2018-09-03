@@ -324,7 +324,7 @@ fits <-
     message("Recalculating predictions based on fit parameters")
     # recalculate predictions based on fit parameters
     preds <- fits %>%
-      tidyr::unnest(fit %>% purrr::map(augment, newdata = new_preds)) %>%
+      tidyr::unnest(fit %>% purrr::map(broom::augment, newdata = new_preds)) %>%
       merge(., max_min, by = "combinationId") %>%
       dplyr::group_by(., combinationId) %>%
       dplyr::filter(
