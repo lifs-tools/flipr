@@ -134,6 +134,8 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
         unique(data$group),
         sep = " "
       )
+    ) + ggplot2::geom_point(
+      ggplot2::aes(x = precursorCollisionEnergy, y = foundIntensity, color="darkgray", alpha=0.7), show.legend = FALSE
     ) + ggplot2::geom_smooth(
       method = "loess",
       colour = "blue",
@@ -375,8 +377,8 @@ plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png",
       unique(data$group),
       sep = " "
     )) +
-    ggplot2::geom_histogram(ggplot2::aes(y =..ndensity..), alpha=0.1, binwidth = 0.01, legend = FALSE) +
-    ggplot2::geom_density(ggplot2::aes(y =..scaled..), alpha=0.05, color="darkgray", fill="darkgray", legend = FALSE) +
+    ggplot2::geom_histogram(ggplot2::aes(y =..ndensity..), alpha=0.1, binwidth = 0.01, show.legend = FALSE) +
+    ggplot2::geom_density(ggplot2::aes(y =..scaled..), alpha=0.05, color="darkgray", fill="darkgray", show.legend = FALSE) +
     ggplot2::geom_rug(ggplot2::aes(x = scanRelativeIntensity, y = 0, color=fragadd), position = ggplot2::position_jitter(height = 0)) +
     #ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::xlab("Scan Relative Intensity") +

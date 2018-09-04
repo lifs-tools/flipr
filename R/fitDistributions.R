@@ -163,6 +163,7 @@ createLipidCreatorParameters <-
 #' @param lower the lower bound for the parameter grid search.
 #' @param upper the upper bound for the parameter grid search.
 #' @param minSamplesPerCombinationId the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
+#' @param max_iter the maximum number of iterations of the model to calculate.
 #' @importFrom magrittr %>%
 #' @export
 fits <-
@@ -175,7 +176,8 @@ fits <-
            start_upper,
            lower,
            upper,
-           minSamplesPerCombinationId = 50) {
+           minSamplesPerCombinationId = 50,
+           max_iter = 500) {
     message(
       paste(
         "Fitting scanRelativeIntensities of fragments for:",
@@ -223,13 +225,14 @@ fits <-
       stop("No rows remaining for model calculation after filtering!")
     }
     message("Writing data for fit")
+    #nls.tibble$weights <- 1/nls.tibble$sriVarPerCombinationId
     readr::write_tsv(nls.tibble, path = file.path(paste0(outputPrefix, "-data-for-fit.tsv")))
 
     message("Creating nls.tibble.nested")
     nls.tibble.nested <- nls.tibble %>%
       tidyr::nest()
     # run nls fits with automatics model selection based on AIC
-    message("Running nls.multstart on nls.tibble.nested")
+    message(paste("Running nls.multstart on nls.tibble.nested with at most", max_iter, "iterations"))
     #ls( environment() )
     fits <- nls.tibble.nested %>%
       dplyr::mutate(fit = purrr::map(
@@ -237,7 +240,7 @@ fits <-
         ~ nls.multstart::nls_multstart(
           scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
           data = .x,
-          iter = 500,
+          iter = max_iter,
           start_lower = start_lower,
           start_upper = start_upper,
           supp_errors = 'Y',

@@ -14,11 +14,12 @@
 #' @param upper the upper bound for the parameter grid search.
 #' @param trainModel whether the model should be calculated.
 #' @param minSamplesPerCombinationId the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
+#' @param max_iter the number of combinations for grid expansion starting parameters.
 #' @return The list of fit tables which includes in named element \code{name} the input file name for the model data, in named element \code{fits} a list with the named elements \code{fits} (nonlinear fits), \code{params} (parameters), \code{CI} (confidence intervals for params), \code{preds} (immediate predictions), \code{nls.tibble.unfiltered} (unfiltered input data), \code{nls.tibble} (data for calculation of fits), and \code{preds_from_data} (predictions from equidistantly resampled x-value range).
 #' @importFrom magrittr %>%
 #' @export
 flip <- function(projectDir=getwd(), plotFormat="png", filePattern="*_fip.tsv", dataPlots=TRUE, minPrecursorCollisionEnergy=0,
-start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinationId=50) {
+start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinationId=50, max_iter=500) {
   setwd(projectDir)
   fip_files <-
     list.files(path = projectDir,
@@ -28,7 +29,8 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinati
     message(paste("Creating plots for file", fip_file, "\n", sep = " "))
     colspec <- readr::cols(
       .default = readr::col_double(),
-      localDateTimeCreated = readr::col_datetime(),
+      instrument = readr::col_character(),
+      localDateTimeCreated = readr::col_datetime(format = ""),
       origin = readr::col_character(),
       scanNumber = readr::col_integer(),
       polarity = readr::col_character(),
@@ -43,7 +45,6 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinati
       `precursorCharge[0]` = readr::col_integer(),
       msFunction = readr::col_character(),
       spectrumType = readr::col_character(),
-      instrument = readr::col_character(),
       group = readr::col_character(),
       `foundMassRange[ppm]` = readr::col_integer(),
       species = readr::col_character(),
@@ -80,8 +81,8 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinati
       subSetData$fragadd <-
         factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass),]$fragadd))
       message(paste0("Using Fragment+Adduct levels ", paste0(levels(subSetData$fragadd), collapse = " | ")))
-      message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$calculatedMass), collapse = " | "))
-      message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$fragadd)))
+      #message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$calculatedMass), collapse = " | "))
+      #message(paste0(unique(subSetData[order(subSetData$calculatedMass),]$fragadd), collapse = " | "))
       color_scale <- ggplot2::scale_colour_hue(name="Fragment", limits=as.character(levels(subSetData$fragadd)), aesthetics = c("colour", "fill"))
       fileName <- paste0(baseFileName, "-", dataIndex,"-of-",lengthOfIndex)
       message(paste0("Writing to file ",fileName))
@@ -151,7 +152,8 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinati
                                             start_upper=start_upper,
                                             lower=lower,
                                             upper=upper,
-                                            minSamplesPerCombinationId=minSamplesPerCombinationId)
+                                            minSamplesPerCombinationId=minSamplesPerCombinationId,
+                                            max_iter=max_iter)
             flipr::plotFits(nlsFitOutputList, splitFileName, plotFormat=plotFormat, color_scale=color_scale)
           },fileName, plotFormat)
         }

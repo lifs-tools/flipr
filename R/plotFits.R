@@ -14,11 +14,11 @@ plotNumberOfSamplesPerCombinationId <- function(nlsFitPlotsOutputList, outputPre
       factor(data$fragadd, levels = unique(data[order(data$calculatedMass),]$fragadd))
     plot <- ggplot2::ggplot(data) +
       ggplot2::geom_boxplot(ggplot2::aes(x=combinationId, y=samplesPerCombinationId, colour=combinationId)) +
-      ggplot2::facet_wrap(
-        fragadd + `foundMassRange[ppm]` ~ polarity,
-        labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
-        ncol = 6
-      ) +
+      #ggplot2::facet_wrap(
+      #  fragadd + `foundMassRange[ppm]` ~ polarity,
+      #  labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
+      #  ncol = 6
+      #) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
       ggplot2::labs(title = paste0(unique(data$species)," ",unique(data$group)),
                     caption = "Number of samples for model training",
@@ -70,6 +70,7 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
     ggplot2::geom_point(ggplot2::aes(combinationId, estimate)) +
     ggplot2::facet_wrap(adduct ~ term, scale = 'free_x',labeller = ggplot2::label_wrap_gen(multi_line=FALSE), ncol = 2) +
     ggplot2::geom_errorbar(ggplot2::aes(combinationId, ymin = conf.low, ymax = conf.high)) +
+    ggplot2::coord_trans(y = "log10") +
     ggplot2::coord_flip() +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::labs(title = paste0(unique(params$species)," ",unique(params$group)),
