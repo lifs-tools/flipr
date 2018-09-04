@@ -28,6 +28,7 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minSamplesPerCombinati
     message(paste("Creating plots for file", fip_file, "\n", sep = " "))
     colspec <- readr::cols(
       .default = readr::col_double(),
+      localDateTimeCreated = readr::col_datetime(),
       origin = readr::col_character(),
       scanNumber = readr::col_integer(),
       polarity = readr::col_character(),
