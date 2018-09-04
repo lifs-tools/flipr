@@ -255,6 +255,8 @@ fits <-
     stopifnot(length(fits) > 0)
 
     message(paste("Extracting fit info for", nrow(fits), "fits", sep = " "))
+    fits <- fits %>% dplyr::filter(!is.null(fit))
+    message(paste("Retaining", nrow(fits), "non-null fits", sep = " "))
     print(fits)
     # get fit information / statistics
     #options(error = dump.frames(to.file=TRUE))
