@@ -162,7 +162,7 @@ createLipidCreatorParameters <-
 #' @param start_upper the upper bound to start the parameter grid search.
 #' @param lower the lower bound for the parameter grid search.
 #' @param upper the upper bound for the parameter grid search.
-#' @param minSamplesPerCombinationId the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
+#' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @param max_iter the maximum number of iterations of the model to calculate.
 #' @importFrom magrittr %>%
 #' @export
@@ -176,7 +176,7 @@ fits <-
            start_upper,
            lower,
            upper,
-           minSamplesPerCombinationId = 50,
+           minDataPoints = 50,
            max_iter = 500) {
     message(
       paste(
@@ -216,6 +216,7 @@ fits <-
       outputPrefix, "-data-for-fit-unfiltered.tsv"
     )))
 
+    message(paste("Requiring at least", minSamplesPerCombinationId, "for model calculation!"))
     nls.tibble <-
       nls.tibble %>% dplyr::filter(samplesPerCombinationId >= minSamplesPerCombinationId)
     nrow.removed <- combinations.unfiltered - length(unique(nls.tibble$combinationId))

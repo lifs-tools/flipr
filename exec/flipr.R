@@ -15,7 +15,8 @@ option_list <- list(
   make_option("--minPrecursorCollisionEnergy", default="0", help = "Minimum precursor collision energy to use for training [default \"%default\"]"),
   make_option("--config", help = "If provided (as an .R file), read settings for non-linear regression search bounds [default \"%default\"]"),
   make_option("--trainModel", default=FALSE, help = "If true, train model based on provided data [default \"%default\"]"),
-  make_option("--maxCombinations", default="100", help = "Number of combinations for grid expansion starting parameters. [default \"%default\"]")
+  make_option("--minDataPoints", default=0, help = "Minimum number of data points required for model calculation [default \"%default\"]"),
+  make_option("--maxCombinations", default=100, help = "Number of combinations for grid expansion starting parameters. [default \"%default\"]")
 )
 # get command line options, if help option encountered print help and exit,
 # otherwise if options not found on command line then set defaults,
@@ -99,4 +100,5 @@ flipFits <- flipr::flip(projectDir = opt$projectDir,
                         lower=lower,
                         upper=upper,
                         trainModel=opt$trainModel,
+                        minDataPoints=opt$minDataPoints,
                         max_iter=opt$maxCombinations)
