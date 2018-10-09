@@ -48,6 +48,7 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minDataPoints=0, max_i
       group = readr::col_character(),
       `foundMassRange[ppm]` = readr::col_integer(),
       species = readr::col_character(),
+      precursorAdduct = readr::col_character(),
       fragment = readr::col_character(),
       adduct = readr::col_character()
     )

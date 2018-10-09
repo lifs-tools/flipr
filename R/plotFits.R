@@ -51,6 +51,7 @@ plotParameterConfidenceIntervals <- function(nlsFitPlotsOutputList, combinationI
       combinationId,
       c(
         "species",
+        "precursorAdduct",
         "fragment",
         "adduct",
         "polarity",
@@ -103,6 +104,7 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
       combinationId,
       c(
         "species",
+        "precursorAdduct",
         "fragment",
         "adduct",
         "polarity",
@@ -191,6 +193,7 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png
       combinationId,
       c(
         "species",
+        "precursorAdduct",
         "fragment",
         "adduct",
         "polarity",

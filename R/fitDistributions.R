@@ -108,6 +108,7 @@ createLipidCreatorParameters <-
         combinationId,
         c(
           "species",
+          "precursorAdduct",
           "fragment",
           "adduct",
           "polarity",
@@ -128,7 +129,8 @@ createLipidCreatorParameters <-
       dplyr::select(
         "instrument",
         "class",
-        "frag",
+        "precursorAdduct",
+        "fragment",
         "adduct",
         #"calculatedMass",
         "ppmMassRange",
@@ -194,6 +196,7 @@ fits <-
       tidyr::unite(
         combinationId,
         species,
+        precursorAdduct,
         fragment,
         adduct,
         polarity,
@@ -358,6 +361,7 @@ fits <-
       preds = preds,
       nls.tibble.unfiltered = nls.tibble.unfiltered,
       nls.tibble = nls.tibble,
-      preds_from_data = preds_from_data
+      preds_from_data = preds_from_data,
+      fitinfo = fitinfo
     )
   }
