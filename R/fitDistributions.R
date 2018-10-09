@@ -123,7 +123,7 @@ createLipidCreatorParameters <-
                       c("ParKey", "ParValue"),
                       sep = "\\|",
                       remove = TRUE) %>%
-      dplyr::rename(class = species, frag = fragment) %>%
+      dplyr::rename(class = species, fragment = fragment) %>%
       dplyr::mutate(instrument = instrumentId,
                     ppmMassRange = as.numeric(ppmMassRange)) %>%
       dplyr::select(
@@ -144,8 +144,8 @@ createLipidCreatorParameters <-
 
     lipidCreatorParams <-
       lipidCreatorParams %>%
-      dplyr::group_by(., instrument, class, frag, adduct, group) %>%
-      dplyr::arrange(., instrument, class, frag, adduct, group, ParKey, ParValue)
+      dplyr::group_by(., instrument, class, fragment, adduct, group) %>%
+      dplyr::arrange(., instrument, class, fragment, adduct, group, ParKey, ParValue)
     return(lipidCreatorParams)
   }
 
@@ -219,11 +219,11 @@ fits <-
       outputPrefix, "-data-for-fit-unfiltered.tsv"
     )))
 
-    message(paste("Requiring at least", minSamplesPerCombinationId, "for model calculation!"))
+    message(paste("Requiring at least", minDataPoints, "for model calculation!"))
     nls.tibble <-
-      nls.tibble %>% dplyr::filter(samplesPerCombinationId >= minSamplesPerCombinationId)
+      nls.tibble %>% dplyr::filter(samplesPerCombinationId >= minDataPoints)
     nrow.removed <- combinations.unfiltered - length(unique(nls.tibble$combinationId))
-    message(paste("Filtered", nrow.removed, "cases from data where samplesPerCombinationId <",minSamplesPerCombinationId))
+    message(paste("Filtered", nrow.removed, "cases from data where samplesPerCombinationId <",minDataPoints))
     message(paste("Remaining data rows:", nrow(nls.tibble)))
     if(nrow(nls.tibble)==0) {
       stop("No rows remaining for model calculation after filtering!")
