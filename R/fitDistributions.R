@@ -347,7 +347,7 @@ fits <-
     message("Extracting fit details")
     # get details of fits
     fitinfo <-
-      info %>% dplyr::select(combinationId, fitFun, sigma, isConv, finTol, logLik, AIC, BIC)
+      info %>% dplyr::select(combinationId, fitFun, r.squared, adj.r.squared, sigma, statistic, p.value, df, isConv, finTol, logLik, AIC, BIC)
     message("Writing fit predictions")
     readr::write_tsv(preds, path = file.path(paste(outputPrefix, "-predictions.tsv", sep =
                                                      "")))
