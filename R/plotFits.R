@@ -178,6 +178,107 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
   )
 }
 
+#' Plots the mean of the squared sum of residuals.
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @importFrom magrittr %>%
+#' @export
+plotResidualsMeanSumSq <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
+
+  #residuals plot of mean sum of squared residuals
+  data <- nlsFitPlotsOutputList$res_normality %>% tidyr::separate(
+    combinationId,
+    c(
+      "species",
+      "precursorAdduct",
+      "fragment",
+      "adduct",
+      "polarity",
+      "calculatedMass",
+      "foundMassRange[ppm]",
+      "group"
+    ),
+    sep = "\\|",
+    remove = FALSE
+  )
+  data$fragadd <- paste(data$fragment, data$adduct, sep = " ")
+  data$fragadd <-
+    factor(data$fragadd, levels = unique(data[order(data$calculatedMass),]$fragadd))
+  resplot <- ggplot2::ggplot(data = data) +
+    ggplot2::geom_point(ggplot2::aes(x=meanResSSq, y=fragadd, shape=`foundMassRange[ppm]`, col = fragadd), size=2, data) +
+    # ggplot2::facet_wrap(
+    #   fragadd ~ `foundMassRange[ppm]`,
+    #   labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
+    #   ncol = 2
+    # ) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
+    ggplot2::labs(title = paste0(unique(data$species)," ",unique(data$group)), colour = 'Fragment', shape = 'Mass Range [ppm]') +
+    ggplot2::ylab("Fragment + Adduct") +
+    ggplot2::xlab(expression(paste(log[10], bar(mu)," Res. SSq",sep = " "))) +
+    # ggplot2::scale_shape_manual(values=c(4, 1), breaks=c("TRUE", "FALSE"), labels=c("Normal","Non-Normal")) +
+    ggplot2::coord_trans(x = "log10") +
+    color_scale
+  ggplot2::ggsave(
+    resplot,
+    filename = paste0(outputPrefix, "-residuals-mean-ssq.", plotFormat),
+    width = plotDimensions$width,
+    height = plotDimensions$height
+  )
+}
+
+#' Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution.
+#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param outputPrefix the basename (identifying a case) for the plot.
+#' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
+#' @param plotDimensions the dimensions of the plot.
+#' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @importFrom magrittr %>%
+#' @export
+plotResidualsQQ <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
+
+  #residuals quantile-quantile plot
+  preds_from_data <- dplyr::left_join(nlsFitPlotsOutputList$preds_from_data, nlsFitPlotsOutputList$res_normality, by=c("combinationId")) %>% tidyr::separate(
+      combinationId,
+      c(
+        "species",
+        "precursorAdduct",
+        "fragment",
+        "adduct",
+        "polarity",
+        "calculatedMass",
+        "foundMassRange[ppm]",
+        "group"
+      ),
+      sep = "\\|",
+      remove = FALSE
+    )
+  preds_from_data$fragadd <- paste(preds_from_data$fragment, preds_from_data$adduct, sep = " ")
+  preds_from_data$fragadd <-
+    factor(preds_from_data$fragadd, levels = unique(preds_from_data[order(preds_from_data$calculatedMass),]$fragadd))
+  resplot <- ggplot2::ggplot(preds_from_data) +
+    ggplot2::aes(shape=isNormal, sample=.resid, col = fragadd) + ggplot2::stat_qq() + ggplot2::stat_qq_line(col = "red", linetype = "dashed") +
+    ggplot2::facet_wrap(
+      fragadd ~ `foundMassRange[ppm]`,
+      labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
+      ncol = 6
+    ) +
+    ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
+    ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)), colour = 'Fragment', shape = 'Res. S-W-Normality') +
+    ggplot2::ylab(expression(paste("Residuals (", Delta,"(",y,",",yhat,")", ")",sep = " "))) +
+    ggplot2::xlab('Theoretical Normal Distribution') +
+    ggplot2::scale_shape_manual(values=c(4, 1), breaks=c("TRUE", "FALSE"), labels=c("Normal","Non-Normal")) +
+    color_scale
+  ggplot2::ggsave(
+    resplot,
+    filename = paste0(outputPrefix, "-residuals-qq.", plotFormat),
+    width = plotDimensions$width,
+    height = plotDimensions$height
+  )
+}
+
 #' Plots the residuals between predicted and measured values.
 #' @param nlsFitPlotsOutputList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
@@ -256,6 +357,8 @@ plotFits <-
            plotFormat = "png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
     plotNumberOfSamplesPerCombinationId(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
     plotResiduals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
+    plotResidualsQQ(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
+    plotResidualsMeanSumSq(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
     plotPredictedFits(nlsFitPlotsOutputList=nlsFitPlotsOutputList, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
     plotParameterConfidenceIntervals(nlsFitPlotsOutputList=nlsFitPlotsOutputList, combinationId=combinationId, outputPrefix=outputPrefix, plotFormat=plotFormat, plotDimensions=plotDimensions, color_scale=color_scale)
   }

@@ -309,6 +309,18 @@ fits <-
     message("Calculating predictions from data")
     preds_from_data <-
       fits %>%  tidyr::unnest(fit %>% purrr::map(broom::augment))
+    message("Writing fit predictions from data with residuals")
+    readr::write_tsv(preds_from_data, path = file.path(paste(outputPrefix, "-predictions-residuals.tsv", sep ="")))
+
+    # test residuals for normality
+    res_normality <- preds_from_data %>% dplyr::group_by(combinationId) %>%
+      dplyr::summarise(statistic=ifelse(sd(.resid)!=0, shapiro.test(.resid)$statistic,NA),
+                p.value=ifelse(sd(.resid)!=0, shapiro.test(.resid)$p.value,NA),
+                isNormal=ifelse(sd(.resid)!=0, shapiro.test(.resid)$p.value>=0.1, FALSE),
+                resSSq=ifelse(sd(.resid)!=0, sum((.resid)^2), NA),
+                meanResSSq=ifelse(sd(.resid)!=0, sum((.resid)^2)/(n()-length(unique(params$term))-1), NA))
+    message("Writing shapiro normality test results for residuals")
+    readr::write_tsv(res_normality, path = file.path(paste(outputPrefix, "-residuals-normality.tsv", sep ="")))
 
     message("Creating new x-values for predictions")
     # use tibble with combinationId for merging and create x-values for each fit (covering the complete x-axis ranges)
@@ -348,7 +360,7 @@ fits <-
     # get details of fits
     fitinfo <-
       info %>% dplyr::select(combinationId, fitFun, sigma, isConv, finTol, logLik, AIC, BIC, deviance, df.residual)
-    message("Writing fit predictions")
+    message("Writing recalculated fit predictions")
     readr::write_tsv(preds, path = file.path(paste(outputPrefix, "-predictions.tsv", sep =
                                                      "")))
     message("Writing fit info")
@@ -362,6 +374,7 @@ fits <-
       nls.tibble.unfiltered = nls.tibble.unfiltered,
       nls.tibble = nls.tibble,
       preds_from_data = preds_from_data,
-      fitinfo = fitinfo
+      fitinfo = fitinfo,
+      res_normality = res_normality
     )
   }
