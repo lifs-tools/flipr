@@ -44,12 +44,10 @@ dlnormPar <-
            sdlog = 1,
            scale = 1,
            shift = 0) {
-    scale * dlnormMode(meanlog = meanlog,
-                       sdlog = sdlog,
-                       shift = shift) * dlnorm(x + shift,
-                                               meanlog = meanlog,
-                                               sdlog = sdlog,
-                                               log = FALSE)
+    scale * dlnorm(x + shift,
+                   meanlog = meanlog,
+                   sdlog = sdlog,
+                   log = FALSE)
   }
 
 #' Selects \code{combinationId}, \code{precursorCollisionEnergy} and \code{scanRelativeIntenty} to write to file.
