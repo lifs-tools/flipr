@@ -74,7 +74,10 @@ start_lower, start_upper, lower, upper, trainModel=FALSE, minDataPoints=0, max_i
     #print(splitOriginalData)
     message(paste("Split data into",length(splitOriginalData),"partitions with levels", paste(levels(as.factor(originalData$origin)),collapse=",")))
     lapply(splitOriginalData, function(splitOriginalData, lengthOfIndex) {
-      subSetData <- splitOriginalData
+      subSetData <- splitOriginalData %>%
+        dplyr::mutate(precursorCollisionEnergyUnitLabel = dplyr::case_when(precursorCollisionEnergyUnit == "electronvolt" ~ "Collision Energy [eV]",
+                                                                           precursorCollisionEnergyUnit == "normalized" ~ "Normalized Collision Energy",
+                                                                           TRUE ~ as.character(precursorCollisionEnergyUnit))) # captures anything else as character
       dataIndex <- unique(subSetData$originId)[[1]]
       print(dataIndex)
       message(paste0("Processing data from ", unique(subSetData$origin)))

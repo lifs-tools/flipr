@@ -9,8 +9,8 @@ by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \co
 Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.}
 \usage{
 fits(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TRUE,
-  start_lower, start_upper, lower, upper,
-  minSamplesPerCombinationId = 50)
+  start_lower, start_upper, lower, upper, minDataPoints = 50,
+  max_iter = 500)
 }
 \arguments{
 \item{tibble}{the data tibble containing fragment data.}
@@ -31,7 +31,9 @@ fits(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TRUE,
 
 \item{upper}{the upper bound for the parameter grid search.}
 
-\item{minSamplesPerCombinationId}{the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.}
+\item{minDataPoints}{the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.}
+
+\item{max_iter}{the maximum number of iterations of the model to calculate.}
 }
 \description{
 Calculates the nonlinear fits for the given tibble. Data will be grouped by

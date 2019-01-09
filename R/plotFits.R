@@ -167,7 +167,7 @@ plotPredictedFits <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat="p
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::labs(title = paste0(unique(preds$species)," ",unique(preds$group)), colour = 'Fragment') +
     ggplot2::ylab('Relative Intensity') +
-    ggplot2::xlab('Collision Energy [eV]') +
+    ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitPlotsOutputList$nls.tibble)) +
     color_scale
   #theme(legend.position = c(0.9, 0.15))
   ggplot2::ggsave(
@@ -330,7 +330,7 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::labs(title = paste0(unique(preds_from_data$species)," ",unique(preds_from_data$group)), colour = 'Fragment') +
     ggplot2::ylab(expression(paste("Residuals (", Delta,"(",y,",",yhat,")", ")",sep = " "))) +
-    ggplot2::xlab('Collision Energy [eV]') +
+    ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitPlotsOutputList$nls.tibble)) +
     ggplot2::scale_y_continuous(limits = c(-0.1, 0.1)) +
     color_scale
   # +
@@ -341,6 +341,14 @@ plotResiduals <- function(nlsFitPlotsOutputList, outputPrefix, plotFormat = "png
     width = plotDimensions$width,
     height = plotDimensions$height
   )
+}
+
+#' Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel.
+#' @param data the FIP input data.
+#' @importFrom magrittr %>%
+#' @export
+collisionEnergyLabel <- function(data) {
+  paste0(unique(data$precursorCollisionEnergyUnitLabel), " ", unique(data$precursorActivationType))
 }
 
 #' Plots information about the fits (residuals, predictions, confidence intervals).

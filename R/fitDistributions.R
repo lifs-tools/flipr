@@ -153,6 +153,17 @@ createLipidCreatorParameters <-
 #' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
 #' Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.
 #'
+#' This method returns a list with the following members:
+#' fits: the nested fit objects tibble,
+#' params: the parameters of the "best" fit for each combination,
+#' CI: confidence intervals for all parameters for each combination,
+#' preds: predictions on a regular grid over the domain of the data,
+#' nls.tibble.unfiltered: all initial data,
+#' nls.tibble: all combination Ids that pass the samplesPerCombinationId >= minDataPoints test,
+#' preds_from_data: predictions at the collision energy values measured in the original data,
+#' fitinfo: metrics and quality information for each fit,
+#' res_normality: results of the residual normality tests for each fit.
+#'
 #' @param tibble the data tibble containing fragment data.
 #' @param outputPrefix the output prefix for the file.
 #' @param group the group that this data belongs to.

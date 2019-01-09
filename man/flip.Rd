@@ -9,7 +9,7 @@ Intermediate models are scored by the AIC value until convergence has been achie
 flip(projectDir = getwd(), plotFormat = "png",
   filePattern = "*_fip.tsv", dataPlots = TRUE,
   minPrecursorCollisionEnergy = 0, start_lower, start_upper, lower,
-  upper, trainModel = FALSE, minSamplesPerCombinationId = 50)
+  upper, trainModel = FALSE, minDataPoints = 0, max_iter = 500)
 }
 \arguments{
 \item{projectDir}{the path to the project directory containing the '_fip.tsv' files as input.}
@@ -32,7 +32,9 @@ flip(projectDir = getwd(), plotFormat = "png",
 
 \item{trainModel}{whether the model should be calculated.}
 
-\item{minSamplesPerCombinationId}{the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.}
+\item{minDataPoints}{the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.}
+
+\item{max_iter}{the number of combinations for grid expansion starting parameters.}
 }
 \value{
 The list of fit tables which includes in named element \code{name} the input file name for the model data, in named element \code{fits} a list with the named elements \code{fits} (nonlinear fits), \code{params} (parameters), \code{CI} (confidence intervals for params), \code{preds} (immediate predictions), \code{nls.tibble.unfiltered} (unfiltered input data), \code{nls.tibble} (data for calculation of fits), and \code{preds_from_data} (predictions from equidistantly resampled x-value range).

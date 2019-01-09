@@ -57,6 +57,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
                            ),
                            data = data,
                            alpha = 0.1) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
     color_scale
   ggplot2::ggsave(
     fpbPlot,
@@ -99,7 +100,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::ylab("Absolute Intensity [a.u.]") +
-    ggplot2::xlab("Collision Energy [eV]") +
+    ggplot2::xlab(flipr::collisionEnergyLabel(data)) +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
     color_scale
@@ -144,7 +145,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
     ggplot2::ylab("Scan Relative Intensity") +
-    ggplot2::xlab("Collision Energy [eV]") +
+    ggplot2::xlab(flipr::collisionEnergyLabel(data)) +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1) +
     color_scale
@@ -188,7 +189,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     ggplot2::geom_area(position = "identity", alpha = 0.3) +
     ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Scan Relative Intensity") +
-    ggplot2::xlab("Collision Energy [eV]") +
+    ggplot2::xlab(flipr::collisionEnergyLabel(data)) +
     ggplot2::labs(colour = 'Fragment', fill = 'Fragment') +
     ggplot2::facet_wrap(~ data$`foundMassRange[ppm]`, ncol = 2, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) + ggplot2::ylim(0,1) +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
@@ -232,7 +233,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
       level = 0.95
     ) + ggplot2::scale_x_continuous(breaks = seq(from=-10, to=plyr::round_any(max(data$precursorCollisionEnergy), 10, f = ceiling)+10, by=10)) +
     ggplot2::ylab("Mass Error [ppm]") +
-    ggplot2::xlab("Collision Energy [eV]") +
+    ggplot2::xlab(flipr::collisionEnergyLabel(data)) +
     ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol = 6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
