@@ -72,7 +72,7 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
 
 #' Add parameter for instrumentId (cvTerm)  and output format suitable
 #' for LipidCreator import.
-#' @param params the fit parameters to modify.
+#' @param params the fit parameters to use.
 #' @param instrumentId the instrumentId cvTerm to use.
 #' @return a tibble in the correct format for LipidCreator with ParKey and ParValue.
 #' @importFrom magrittr %>%
@@ -136,7 +136,7 @@ createLipidCreatorParameters <-
         #      "model",
         "ParKey",
         "ParValue"
-      ) %>% dplyr::filter(ppmMassRange == min(ppmMassRange))
+      )# %>% dplyr::filter(ppmMassRange == min(ppmMassRange))
 
     #print(lipidCreatorParams)
 
