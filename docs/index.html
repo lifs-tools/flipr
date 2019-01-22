@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">flipr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
       </span>
     </div>
 
@@ -66,16 +66,23 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Install devtools:</p>
+<p>For Ubuntu, please install the following libraries:</p>
+<pre><code>  sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev</code></pre>
+<p>Your will require R&gt;=3.4.4 for flipr. Start administrator’s R session as follows, to install the packages into the site-wide (all users) library:</p>
+<pre><code>  sudo -i R</code></pre>
+<p>Install devtools and wait until installation has finished:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">install.packages</span>(<span class="st">"devtools"</span>)</code></pre></div>
+<p>Load the devtools library:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">library</span>(devtools)</code></pre></div>
 <p>Run</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">install_git</span>(<span class="st">"https://gitlab.isas.de/hoffmann/flipr.git"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_git">install_git</a></span>(<span class="st">"https://gitlab.isas.de/hoffmann/flipr.git"</span>)</code></pre></div>
 <p>Done!</p>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">library</span>(<span class="st">"flipr"</span>)
-  prm_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"12-HETE-d8_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)
+  prm_file &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"12-HETE-d8_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)
   fits &lt;-<span class="st"> </span><span class="kw"><a href="reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw">dirname</span>(prm_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw">basename</span>(prm_file), <span class="dt">dataPlots =</span> <span class="ot">FALSE</span>)</code></pre></div>
 </div>
 <div id="installation-for-development" class="section level2">

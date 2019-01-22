@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file. — writeGroup • flipr</title>
+<title>Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel. — collisionEnergyLabel • flipr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file. — writeGroup" />
+<meta property="og:title" content="Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel. — collisionEnergyLabel" />
 
-<meta property="og:description" content="Selects combinationId, precursorCollisionEnergy and scanRelativeIntenty to write to file." />
+<meta property="og:description" content="Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,39 +92,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file.</h1>
+    <h1>Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel.</h1>
     
-    <div class="hidden name"><code>writeGroup.Rd</code></div>
+    <div class="hidden name"><code>collisionEnergyLabel.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file.</p>
+    <p>Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>writeGroup</span>(<span class='no'>tibble</span>, <span class='no'>outputPrefix</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>collisionEnergyLabel</span>(<span class='no'>data</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tibble</th>
-      <td><p>the data frame / tibble to write.</p></td>
-    </tr>
-    <tr>
-      <th>outputPrefix</th>
-      <td><p>the output prefix for the file.</p></td>
-    </tr>
-    <tr>
-      <th>skip</th>
-      <td><p>if true, skip writing.</p></td>
+      <th>data</th>
+      <td><p>the FIP input data.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the input tibble.</p>
     
 
   </div>
@@ -132,9 +120,7 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

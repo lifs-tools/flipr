@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file. — writeGroup • flipr</title>
+<title>Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution. — plotResidualsQQ • flipr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file. — writeGroup" />
+<meta property="og:title" content="Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution. — plotResidualsQQ" />
 
-<meta property="og:description" content="Selects combinationId, precursorCollisionEnergy and scanRelativeIntenty to write to file." />
+<meta property="og:description" content="Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,39 +92,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file.</h1>
+    <h1>Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution.</h1>
     
-    <div class="hidden name"><code>writeGroup.Rd</code></div>
+    <div class="hidden name"><code>plotResidualsQQ.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Selects <code>combinationId</code>, <code>precursorCollisionEnergy</code> and <code>scanRelativeIntenty</code> to write to file.</p>
+    <p>Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>writeGroup</span>(<span class='no'>tibble</span>, <span class='no'>outputPrefix</span>, <span class='kw'>skip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>plotResidualsQQ</span>(<span class='no'>nlsFitPlotsOutputList</span>, <span class='no'>outputPrefix</span>, <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"png"</span>,
+  <span class='kw'>plotDimensions</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>11.69</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>8.27</span>),
+  <span class='kw'>color_scale</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_hue.html'>scale_colour_hue</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tibble</th>
-      <td><p>the data frame / tibble to write.</p></td>
+      <th>nlsFitPlotsOutputList</th>
+      <td><p>the FIP fits output list.</p></td>
     </tr>
     <tr>
       <th>outputPrefix</th>
-      <td><p>the output prefix for the file.</p></td>
+      <td><p>the basename (identifying a case) for the plot.</p></td>
     </tr>
     <tr>
-      <th>skip</th>
-      <td><p>if true, skip writing.</p></td>
+      <th>plotFormat</th>
+      <td><p>the format, passed to <code><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggplot2::ggsave</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>plotDimensions</th>
+      <td><p>the dimensions of the plot.</p></td>
+    </tr>
+    <tr>
+      <th>color_scale</th>
+      <td><p>the shared color scale to identify fragment and adduct pairs.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the input tibble.</p>
     
 
   </div>
@@ -132,9 +138,7 @@
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

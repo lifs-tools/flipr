@@ -40,11 +40,16 @@ Calculates non linear regression models by performing an interative grid search 
 by <code>lower</code> and <code>upper</code> vectors, starting at <code>start_lower</code> and <code>start_upper</code>.
 Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart. — fits" />
 
-<meta property="og:description" content="Calculates the nonlinear fits for the given tibble. Data will be grouped by
-combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
-Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
-by lower and upper vectors, starting at start_lower and start_upper.
-Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart." />
+<meta property="og:description" content="This method returns a list with the following members:
+fits: the nested fit objects tibble,
+params: the parameters of the &quot;best&quot; fit for each combination,
+CI: confidence intervals for all parameters for each combination,
+preds: predictions on a regular grid over the domain of the data,
+nls.tibble.unfiltered: all initial data,
+nls.tibble: all combination Ids that pass the samplesPerCombinationId &amp;gt;= minDataPoints test,
+preds_from_data: predictions at the collision energy values measured in the original data,
+fitinfo: metrics and quality information for each fit,
+res_normality: results of the residual normality tests for each fit." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -73,7 +78,7 @@ Intermediate models are scored by the AIC value until convergence has been achie
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">flipr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
       </span>
     </div>
 
@@ -115,17 +120,22 @@ Intermediate models are scored by the AIC value until convergence has been achie
 
     <div class="ref-description">
     
-    <p>Calculates the nonlinear fits for the given tibble. Data will be grouped by
-combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
-Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
-by <code>lower</code> and <code>upper</code> vectors, starting at <code>start_lower</code> and <code>start_upper</code>.
-Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.</p>
+    <p>This method returns a list with the following members:
+fits: the nested fit objects tibble,
+params: the parameters of the "best" fit for each combination,
+CI: confidence intervals for all parameters for each combination,
+preds: predictions on a regular grid over the domain of the data,
+nls.tibble.unfiltered: all initial data,
+nls.tibble: all combination Ids that pass the samplesPerCombinationId &gt;= minDataPoints test,
+preds_from_data: predictions at the collision energy values measured in the original data,
+fitinfo: metrics and quality information for each fit,
+res_normality: results of the residual normality tests for each fit.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>fits</span>(<span class='no'>tibble</span>, <span class='no'>outputPrefix</span>, <span class='no'>group</span>, <span class='no'>instrumentId</span>, <span class='kw'>skipGroupOutput</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>start_lower</span>, <span class='no'>start_upper</span>, <span class='no'>lower</span>, <span class='no'>upper</span>,
-  <span class='kw'>minSamplesPerCombinationId</span> <span class='kw'>=</span> <span class='fl'>50</span>)</pre>
+  <span class='no'>start_lower</span>, <span class='no'>start_upper</span>, <span class='no'>lower</span>, <span class='no'>upper</span>, <span class='kw'>minDataPoints</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>500</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,8 +177,12 @@ Intermediate models are scored by the AIC value until convergence has been achie
       <td><p>the upper bound for the parameter grid search.</p></td>
     </tr>
     <tr>
-      <th>minSamplesPerCombinationId</th>
+      <th>minDataPoints</th>
       <td><p>the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.</p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>the maximum number of iterations of the model to calculate.</p></td>
     </tr>
     </table>
     

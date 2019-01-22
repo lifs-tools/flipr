@@ -67,7 +67,7 @@ Intermediate models are scored by the AIC value until convergence has been achie
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">flipr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.4</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ Intermediate models are scored by the AIC value until convergence has been achie
     <pre class="usage"><span class='fu'>flip</span>(<span class='kw'>projectDir</span> <span class='kw'>=</span> <span class='fu'>getwd</span>(), <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"png"</span>,
   <span class='kw'>filePattern</span> <span class='kw'>=</span> <span class='st'>"*_fip.tsv"</span>, <span class='kw'>dataPlots</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>minPrecursorCollisionEnergy</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='no'>start_lower</span>, <span class='no'>start_upper</span>, <span class='no'>lower</span>,
-  <span class='no'>upper</span>, <span class='kw'>trainModel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>minSamplesPerCombinationId</span> <span class='kw'>=</span> <span class='fl'>50</span>)</pre>
+  <span class='no'>upper</span>, <span class='kw'>trainModel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>minDataPoints</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>500</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -127,7 +127,7 @@ Intermediate models are scored by the AIC value until convergence has been achie
     </tr>
     <tr>
       <th>plotFormat</th>
-      <td><p>the plot format, as supported by <code><a href='http://www.rdocumentation.org/packages/ggplot2/topics/ggsave'>ggplot2::ggsave</a></code>.</p></td>
+      <td><p>the plot format, as supported by <code><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggplot2::ggsave</a></code>.</p></td>
     </tr>
     <tr>
       <th>filePattern</th>
@@ -162,8 +162,12 @@ Intermediate models are scored by the AIC value until convergence has been achie
       <td><p>whether the model should be calculated.</p></td>
     </tr>
     <tr>
-      <th>minSamplesPerCombinationId</th>
+      <th>minDataPoints</th>
       <td><p>the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.</p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>the number of combinations for grid expansion starting parameters.</p></td>
     </tr>
     </table>
     
