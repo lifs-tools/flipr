@@ -36,9 +36,14 @@ fits(tibble, outputPrefix, group, instrumentId, skipGroupOutput = TRUE,
 \item{max_iter}{the maximum number of iterations of the model to calculate.}
 }
 \description{
-Calculates the nonlinear fits for the given tibble. Data will be grouped by
-combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
-Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
-by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
-Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.
+This method returns a list with the following members:
+fits: the nested fit objects tibble,
+params: the parameters of the "best" fit for each combination,
+CI: confidence intervals for all parameters for each combination,
+preds: predictions on a regular grid over the domain of the data,
+nls.tibble.unfiltered: all initial data,
+nls.tibble: all combination Ids that pass the samplesPerCombinationId >= minDataPoints test,
+preds_from_data: predictions at the collision energy values measured in the original data,
+fitinfo: metrics and quality information for each fit,
+res_normality: results of the residual normality tests for each fit.
 }

@@ -8,7 +8,7 @@ for LipidCreator import.}
 createLipidCreatorParameters(params, instrumentId = "MS:XXXXXX")
 }
 \arguments{
-\item{params}{the fit parameters to modify.}
+\item{params}{the fit parameters to use.}
 
 \item{instrumentId}{the instrumentId cvTerm to use.}
 }
