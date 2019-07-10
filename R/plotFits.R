@@ -220,6 +220,7 @@ plotResidualsMeanSumSq <- function(nlsFitPlotsOutputList, outputPrefix, plotForm
     ggplot2::xlab(expression(paste(log[10], bar(mu)," Res. SSq",sep = " "))) +
     # ggplot2::scale_shape_manual(values=c(4, 1), breaks=c("TRUE", "FALSE"), labels=c("Normal","Non-Normal")) +
     ggplot2::coord_trans(x = "log10") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
     color_scale
   ggplot2::ggsave(
     resplot,
