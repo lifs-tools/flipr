@@ -176,6 +176,8 @@ createLipidCreatorParameters <-
 #' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @param max_iter the maximum number of iterations of the model to calculate.
 #' @importFrom magrittr %>%
+#' @importFrom stats AIC BIC deviance df.residual dlnorm logLik sd shapiro.test sigma
+#' @importFrom utils data
 #' @export
 fits <-
   function(tibble,
@@ -356,7 +358,6 @@ fits <-
     message("Merging fit parameters and CI estimates")
     params <-
       merge(params, CI, by = dplyr::intersect(names(params), names(CI)))
-    # params <- params %>% mutate(combinationId = paste(fragment, adduct, polarity, sep = "-", collapse=T) )
 
     message("Writing merged parameters")
     readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-parameters.tsv")))
@@ -365,13 +366,13 @@ fits <-
     preds_from_data <- fits %>%
       dplyr::select(preds_from_data) %>%
       tidyr::unnest(cols = c(preds_from_data)) %>%
-      group_by(combinationId) %>%
-      mutate(
+      dplyr::group_by(combinationId) %>%
+      dplyr::mutate(
         .std.resid = (.resid / sd(.resid)),
         .m.resid = mean(.resid),
         .sd.resid = sd(.resid)
       ) %>%
-      ungroup()
+      dplyr::ungroup()
 
     message("Writing fit predictions from data with residuals")
     readr::write_tsv(preds_from_data, path = file.path(paste(
@@ -392,7 +393,7 @@ fits <-
         ),
         resSSq = ifelse(sd(.resid) != 0, sum((.resid) ^ 2), NA),
         meanResSSq = ifelse(sd(.resid) != 0,
-                            sum((.resid) ^ 2) / (n() - length(unique(params$term)) - 1), NA)
+                            sum((.resid) ^ 2) / (dplyr::n() - length(unique(params$term)) - 1), NA)
       )
     message("Writing shapiro normality test results for residuals")
     readr::write_tsv(res_normality, path = file.path(paste(
