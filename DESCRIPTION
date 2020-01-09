@@ -1,7 +1,7 @@
 Package: flipr
 Type: Package
 Title: Relative Fragment Intensity Prediction for Lipids
-Version: 1.0.5
+Version: 1.0.6
 Authors@R: person("Nils","Hoffmann", email="nils.hoffmann@isas.de", role = c("aut","cre"))
 Description: Calculates non-linear models for relative fragment intensity prediction based on series of increasing collision energies for HCD and CID systems.
 License: MIT + file LICENSE
