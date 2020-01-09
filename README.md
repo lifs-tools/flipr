@@ -35,12 +35,28 @@ Load the devtools library:
 Run
 
 ```R
-  install_git("https://gitlab.isas.de/hoffmann/flipr.git")
+  install_git("https://github.com/lifs-tools/flipr.git")
 ```
 
 Done!
 
 ## Usage ##
+
+### Creating a transition list with LipidCreator
+
+
+
+### Measuring a standard sample on an MS platform
+
+### Converting the raw MS data
+
+We use msConvert to convert the raw MS data for different vendor platforms into mzML.
+
+
+### Extracting fragment ion traces from the MS file 
+
+Transition extractor 
+
 
 ```R
   library("flipr")
@@ -56,6 +72,3 @@ flipr uses packrat to manage its dependencies in a clean state during developmen
    install_local("/path/to/flipr/packrat/lib/x86_64-pc-linux-gnu/3.4.4/flipr/")
 ```
 
----
-
-The flipr logo is based on the dolphin logo from https://www.creativetail.com/40-free-flat-animal-icons/. The original is licensed under the Creative Commons Attribution 4.0 International license. See their licensing terms: https://www.creativetail.com/licensing/
