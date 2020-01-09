@@ -59,18 +59,12 @@ We use msConvert to convert the raw MS data for different vendor platforms into 
 
 Transition extractor 
 
+### Fitting a model for multiple fragment ion traces over a CE sequence
 
 ```R
   library("flipr")
-  prm_file <- system.file("extdata", "12-HETE-d8_fip.tsv", package = "flipr", mustWork = TRUE)
-  fits <- flip(projectDir = dirname(prm_file), plotFormat = "pdf", filePattern = basename(prm_file), dataPlots = FALSE)
+  xics_file <- system.file("extdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
+  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
 ```
 
-## Installation for development ##
-flipr uses packrat to manage its dependencies in a clean state during development. This does mean, that you need to install flipr into your local R installation, if you want to use your local development version outside of the flipr directory.
-
-```R
-   library(devtools)
-   install_local("/path/to/flipr/packrat/lib/x86_64-pc-linux-gnu/3.4.4/flipr/")
-```
 

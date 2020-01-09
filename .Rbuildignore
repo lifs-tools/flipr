@@ -21,3 +21,8 @@
 ^LICENSE\.md$
 ^\.github/workflows/R\.yaml$
 ^\.github/workflows/pr-commands\.yaml$
+^application\.sh$
+^build-docker\.sh$
+^build-site\.sh$
+^build\.sh$
+^docker$

@@ -4,3 +4,4 @@ packrat/lib*/
 .Rhistory
 .Rprofile
 flipr.Rcheck/
+man/
