@@ -1,5 +1,6 @@
 
-
+#' Calculate non linear regression models.
+#'
 #' Calculates non linear regression models by performing an iterative grid search within the coordinate bounds provided
 #' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
 #' Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.

@@ -5,3 +5,4 @@ packrat/lib*/
 .Rprofile
 flipr.Rcheck/
 man/
+inst/doc

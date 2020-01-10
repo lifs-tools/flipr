@@ -279,7 +279,7 @@ plotResidualsMeanSumSq <-
     )
   }
 
-#' Plots the residuals quantile-quantile plot between calculated residuals and an assumed normal distribution.
+#' Plots the residuals quantile-quantile plot between standardized residuals and an assumed normal distribution.
 #' @param nlsFitPlotsOutputList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.

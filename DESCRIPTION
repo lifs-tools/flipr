@@ -24,5 +24,8 @@ Imports:
     tibble
 Suggests:
     testthat,
-    pkgdown
+    pkgdown,
+    knitr,
+    rmarkdown
 RoxygenNote: 7.0.1
+VignetteBuilder: knitr

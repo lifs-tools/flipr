@@ -1,24 +1,5 @@
-#' #huber loss function
-#' #' @export
-#' huberLossPw <- function(x, hgamma = 0.05) {
-#'   stopifnot(is.double(x))
-#'   if (abs(x) <= hgamma) {
-#'     0.5 * (x) ^ 2
-#'   } else {
-#'     hgamma * abs(x) - ((hgamma ^ 2) / 2)
-#'   }
-#' }
-#'
-#' #' @export
-#' huberLoss <- function(x, hgamma = 0.05) {
-#'   sapply(x, huberLossPw, hgamma = hgamma)
-#' }
-#'
-#' huberLoss2 <- function(x1, x2, hgamma = 0.05) {
-#'   huberLoss(x1 - x2, hgamma = hgamma)
-#' }
-
 #' Mode function of shifted \code{dlnorm}.
+#'
 #' @param meanlog the \code{meanlog} argument for \code{dlnorm}.
 #' @param sdlog the \code{sdlog} argument for \code{dlnorm}
 #' @param shift the \code{shift} parameter modulates the shift of the log-normal density function or 0.
@@ -28,7 +9,9 @@ dlnormMode <- function(meanlog, sdlog, shift = 0) {
   exp(meanlog - (sdlog ^ 2)) - shift
 }
 
-#' Parameterized version of the log-normal density function \code{dlnorm} with additional "norm" expression and "scale" factor.
+#' Parameterized version of the log-normal density function \code{dlnorm}.
+#'
+#' Extended to use additional "norm" expression and "scale" factor terms.
 #' Both are multiplied with the actual log-normal density kernel.
 #'
 #' @param x the \code{x} argument for the log-normal density function
@@ -51,6 +34,7 @@ dlnormPar <-
   }
 
 #' Selects \code{combinationId}, \code{precursorCollisionEnergy} and \code{scanRelativeIntenty} to write to file.
+#'
 #' @param tibble the data frame / tibble to write.
 #' @param outputPrefix the output prefix for the file.
 #' @param skip if true, skip writing.
@@ -70,6 +54,8 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
   return(tibble)
 }
 
+#' Creates fragment parameter file for LipidCreator.
+#'
 #' Add parameter for instrumentId (cvTerm) and output format suitable
 #' for LipidCreator import.
 #' @param params the fit parameters to use.
@@ -147,7 +133,9 @@ createLipidCreatorParameters <-
     return(lipidCreatorParams)
   }
 
-#' Calculates the nonlinear fits for the given tibble. Data will be grouped by
+#' Calculates the nonlinear fits for the given tibble.
+#'
+#' Data will be grouped by
 #' combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
 #' Calculates non linear regression models by performing an iterative grid search within the coordinate bounds provided
 #' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.

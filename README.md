@@ -42,29 +42,4 @@ Run
 
 Done!
 
-## Usage ##
-
-### Creating a transition list with LipidCreator
-
-
-
-### Measuring a standard sample on an MS platform
-
-### Converting the raw MS data
-
-We use msConvert to convert the raw MS data for different vendor platforms into mzML.
-
-
-### Extracting fragment ion traces from the MS file 
-
-Transition extractor 
-
-### Fitting a model for multiple fragment ion traces over a CE sequence
-
-```R
-  library("flipr")
-  xics_file <- system.file("extdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
-  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
-```
-
 
