@@ -42,4 +42,45 @@ Run
 
 Done!
 
+## Building the Docker image ##
+
+The flipr package can also be packaged as a Docker container. To build it for your local use, use the following command under Linux:
+
+```
+./build-docker.sh -d=docker/flipr/ -v=MYTAG 
+```
+
+`MYTAG` would usually be the package version, e.g. `1.0.6`. This command will build the image and will tag it under the version provided with `-v`.
+
+If you want to change the default registry prefix used for tagging, edit the `config.sh` file. Also, the tagging base (the first part after the registry) can 
+be defined in that file.
+
+### Running the Docker image ###
+
+To run flipr using the docker image from your current directory (under Linux), run it as follows (assuming you have not changed `config.sh`):
+
+```
+docker run -v "$PWD":/home/data/ do1-aps-feris.isas.de:5000/lifs/flipr:1.0.6 --projectDir=/home/data --trainModel=TRUE --dataPlots=TRUE
+```
+
+This will mount the contents of the current directory (PWD) into the `/home/data` folder within the container. Then, Docker will run the image tagged 
+`do1-aps-feris.isas.de:5000/lifs/flipr:1.0.6` on your local machine. The commands following are passed to the `flipr.R` script, which is located in the `exec` folder of the package.
+To see, which options are available, add `--help` to the command. It is advisable to add a custom `config.R` file to define the boundaries for the optimization. You can use it as follows:
+
+
+```
+docker run -v "$PWD":/home/data/ do1-aps-feris.isas.de:5000/lifs/flipr:1.0.6 --projectDir=/home/data --trainModel=TRUE --dataPlots=TRUE --config=config.R
+```
+This assumes, that `config.R` is available within the `projectDir` directory. All file and directory arguments apply to the file system **within** the container!
+
+
+Example files are available from the `inst/testdata` folder of this project.
+
+1. Create a new folder `flipr-test`
+2. Copy the files `inst/testdata/qex-HF-config.R` and `inst/testdata/12-HETE-d8-_M-H_1-qex_fip.tsv` into `flipr-test`
+3. Change to the `flipr-test` folder
+4. Run the flipr Docker container: `docker run --rm -v "$PWD":/home/data/ do1-aps-feris.isas.de:5000/lifs/flipr:1.0.6 --projectDir=/home/data --trainModel=TRUE --dataPlots=TRUE --config=/home/data/qex-HF-config.R`
+5. Examine the execution of the container and open the results in `flipr-test`
+
+You will see multiple diagnostic plots of the extracted signals, as well as plots generated to display the model fit and various metrics for the fit quality. Each plot will contain display information for each of the fragments defined for one precursor molecule and adduct combination. 
 
