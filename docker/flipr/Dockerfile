@@ -29,7 +29,7 @@ ADD flipr.sh /tmp/
 RUN cp /tmp/flipr.sh /bin/flipr && chmod 755 /bin/flipr
 ENTRYPOINT ["bash","/bin/flipr"]
 LABEL application.version="1.0.6-testing"
-LABEL application.build.timestamp="2020-01-22T17:47:01+01:00"
+LABEL application.build.timestamp="2020-01-22T17:47:59+01:00"
 LABEL application.name="flipr"
 LABEL application.authors="Nils Hoffmann"
 LABEL application.maintainer=""
