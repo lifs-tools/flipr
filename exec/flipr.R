@@ -1,6 +1,8 @@
 library("optparse")
 library("flipr")
 message(paste0("Using flipr ", packageVersion("flipr")))
+message(paste0("Call flipr.R --help for options!"))
+message(paste0("Get help at https://github.com/lifs-tools/flipr"))
 options(show.error.locations = TRUE)
 # specify our desired options in a list
 # by default OptionParser will add an help option equivalent to
