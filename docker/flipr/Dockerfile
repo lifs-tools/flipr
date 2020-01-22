@@ -14,7 +14,7 @@ ADD http://master.bioconductor.org/todays-date /tmp/
 RUN R -f /tmp/install.R
 RUN R -f /tmp/install-custom.R
 LABEL application.version="1.0.6-testing"
-LABEL application.build.timestamp="2020-01-22T17:28:41+01:00"
+LABEL application.build.timestamp="2020-01-22T17:34:16+01:00"
 LABEL application.name="flipr"
 LABEL application.authors="Nils Hoffmann"
 LABEL application.maintainer=""
