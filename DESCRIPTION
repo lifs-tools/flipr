@@ -21,7 +21,8 @@ Imports:
     magrittr,
     broom,
     minpack.lm,
-    tibble
+    tibble,
+    optparse
 Suggests:
     testthat,
     pkgdown
