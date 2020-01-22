@@ -255,7 +255,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @return the ggplot object.
 #' @export
-plotMassDensityDistribution <- function(data, basename, plotFormat="png", nppmLevels, plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
+plotMassDensityDistribution <- function(data, basename, plotFormat="png", plotDimensions=list(width=11.69, height=8.27), color_scale = ggplot2::scale_colour_hue()) {
   message("m/z density distribution")
   stopifnot(!missing(data))
   stopifnot(!missing(basename))

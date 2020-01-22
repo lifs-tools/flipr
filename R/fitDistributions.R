@@ -1,24 +1,5 @@
-#' #huber loss function
-#' #' @export
-#' huberLossPw <- function(x, hgamma = 0.05) {
-#'   stopifnot(is.double(x))
-#'   if (abs(x) <= hgamma) {
-#'     0.5 * (x) ^ 2
-#'   } else {
-#'     hgamma * abs(x) - ((hgamma ^ 2) / 2)
-#'   }
-#' }
-#'
-#' #' @export
-#' huberLoss <- function(x, hgamma = 0.05) {
-#'   sapply(x, huberLossPw, hgamma = hgamma)
-#' }
-#'
-#' huberLoss2 <- function(x1, x2, hgamma = 0.05) {
-#'   huberLoss(x1 - x2, hgamma = hgamma)
-#' }
-
 #' Mode function of shifted \code{dlnorm}.
+#'
 #' @param meanlog the \code{meanlog} argument for \code{dlnorm}.
 #' @param sdlog the \code{sdlog} argument for \code{dlnorm}
 #' @param shift the \code{shift} parameter modulates the shift of the log-normal density function or 0.
@@ -28,7 +9,9 @@ dlnormMode <- function(meanlog, sdlog, shift = 0) {
   exp(meanlog - (sdlog ^ 2)) - shift
 }
 
-#' Parameterized version of the log-normal density function \code{dlnorm} with additional "norm" expression and "scale" factor.
+#' Parameterized version of the log-normal density function \code{dlnorm}.
+#'
+#' Extended to use additional "norm" expression and "scale" factor terms.
 #' Both are multiplied with the actual log-normal density kernel.
 #'
 #' @param x the \code{x} argument for the log-normal density function
@@ -51,6 +34,7 @@ dlnormPar <-
   }
 
 #' Selects \code{combinationId}, \code{precursorCollisionEnergy} and \code{scanRelativeIntenty} to write to file.
+#'
 #' @param tibble the data frame / tibble to write.
 #' @param outputPrefix the output prefix for the file.
 #' @param skip if true, skip writing.
@@ -70,7 +54,9 @@ writeGroup <- function(tibble, outputPrefix, skip = FALSE) {
   return(tibble)
 }
 
-#' Add parameter for instrumentId (cvTerm)  and output format suitable
+#' Creates fragment parameter file for LipidCreator.
+#'
+#' Add parameter for instrumentId (cvTerm) and output format suitable
 #' for LipidCreator import.
 #' @param params the fit parameters to use.
 #' @param instrumentId the instrumentId cvTerm to use.
@@ -147,11 +133,13 @@ createLipidCreatorParameters <-
     return(lipidCreatorParams)
   }
 
-#' Calculates the nonlinear fits for the given tibble. Data will be grouped by
+#' Calculates the nonlinear fits for the given tibble.
+#'
+#' Data will be grouped by
 #' combinationId, species, fragment, adduct, polarity, calculatedMass, foundMassRange[ppm], and group columns.
-#' Calculates non linear regression models by performing an interative grid search within the coordinate bounds provided
+#' Calculates non linear regression models by performing an iterative grid search within the coordinate bounds provided
 #' by \code{lower} and \code{upper} vectors, starting at \code{start_lower} and \code{start_upper}.
-#' Intermediate models are scored by the AIC value until convergence has been achieved as to the defaults of nls.multstart.
+#' Intermediate models are scored by the AIC value until convergence has been achieved following the defaults of nls.multstart.
 #'
 #' This method returns a list with the following members:
 #' fits: the nested fit objects tibble,
@@ -176,6 +164,8 @@ createLipidCreatorParameters <-
 #' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @param max_iter the maximum number of iterations of the model to calculate.
 #' @importFrom magrittr %>%
+#' @importFrom stats AIC BIC deviance df.residual dlnorm logLik sd shapiro.test sigma
+#' @importFrom utils data
 #' @export
 fits <-
   function(tibble,
@@ -223,7 +213,8 @@ fits <-
                                                                                                                                             skipGroupOutput))
     message("Writing unfiltered data before fit")
     nls.tibble.unfiltered <- nls.tibble
-    combinations.unfiltered <- length(unique(nls.tibble.unfiltered$combinationId))
+    combinations.unfiltered <-
+      length(unique(nls.tibble.unfiltered$combinationId))
     readr::write_tsv(nls.tibble.unfiltered, path = file.path(paste0(
       outputPrefix, "-data-for-fit-unfiltered.tsv"
     )))
@@ -231,105 +222,23 @@ fits <-
     message(paste("Requiring at least", minDataPoints, "for model calculation!"))
     nls.tibble <-
       nls.tibble %>% dplyr::filter(samplesPerCombinationId >= minDataPoints)
-    nrow.removed <- combinations.unfiltered - length(unique(nls.tibble$combinationId))
-    message(paste("Filtered", nrow.removed, "cases from data where samplesPerCombinationId <",minDataPoints))
+    nrow.removed <-
+      combinations.unfiltered - length(unique(nls.tibble$combinationId))
+    message(
+      paste(
+        "Filtered",
+        nrow.removed,
+        "cases from data where samplesPerCombinationId <",
+        minDataPoints
+      )
+    )
     message(paste("Remaining data rows:", nrow(nls.tibble)))
-    if(nrow(nls.tibble)==0) {
+    if (nrow(nls.tibble) == 0) {
       stop("No rows remaining for model calculation after filtering!")
     }
     message("Writing data for fit")
     #nls.tibble$weights <- 1/nls.tibble$sriVarPerCombinationId
     readr::write_tsv(nls.tibble, path = file.path(paste0(outputPrefix, "-data-for-fit.tsv")))
-
-    message("Creating nls.tibble.nested")
-    nls.tibble.nested <- nls.tibble %>%
-      tidyr::nest()
-    # run nls fits with automatics model selection based on AIC
-    message(paste("Running nls.multstart on nls.tibble.nested with at most", max_iter, "iterations"))
-    #ls( environment() )
-    fits <- nls.tibble.nested %>%
-      dplyr::mutate(fit = purrr::map(
-        data,
-        ~ nls.multstart::nls_multstart(
-          scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
-          data = .x,
-          iter = max_iter,
-          start_lower = start_lower,
-          start_upper = start_upper,
-          supp_errors = 'Y',
-          na.action = na.omit,
-          lower = lower,
-          upper = upper
-        )
-        ,
-        safely(x, otherwise = NA)
-      ),
-      fitFun = "dlnormPar")
-    stopifnot(length(fits) > 0)
-
-    message(paste("Extracting fit info for", nrow(fits), "fits", sep = " "))
-    fits <- fits %>% dplyr::filter(!is.null(fit))
-    message(paste("Retaining", nrow(fits), "non-null fits", sep = " "))
-    print(fits)
-    # get fit information / statistics
-    #options(error = dump.frames(to.file=TRUE))
-    info <- fits %>%
-      tidyr::unnest(fit %>% purrr::map(broom::glance))
-    message("Extracting fit parameters")
-    # get fit parameters
-    params <- fits %>%
-      tidyr::unnest(fit %>% purrr::map(broom::tidy))
-
-    message("Writing raw parameters")
-    readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-raw-parameters.tsv")))
-
-    message("Calculating confidence intervals")
-    # calculate confidence intervals for parameters
-    CI <- fits %>%
-      tidyr::unnest(fit %>% purrr::map(
-        ~ nlstools::confint2(.x) %>%
-          data.frame() %>%
-          dplyr::rename(., conf.low = X2.5.., conf.high = X97.5..)
-      )) %>%
-      dplyr::group_by(., combinationId) %>%
-      dplyr::mutate(., term = c('meanlog', 'sdlog', 'scale', 'shift')) %>%
-      dplyr::ungroup()
-
-    # check that we only have a single model
-    stopifnot(length(unique(params$fitFun)) == 1)
-
-    lipidCreatorParams <-
-      createLipidCreatorParameters(params, instrumentId)
-    # TODO additional renormalization after grouping for each "species", adduct, polarity and ppmMassRange -> scale needs to fall into the range of 0-1
-    message("Writing LipidCreator parameters")
-    readr::write_csv(lipidCreatorParams, path = file.path(paste0(
-      outputPrefix, "-lipidcreator-parameters.csv"
-    )))
-
-    # merge parameters and CI estimates
-    message("Merging fit parameters and CI estimates")
-    params <-
-      merge(params, CI, by = dplyr::intersect(names(params), names(CI)))
-    # params <- params %>% mutate(combinationId = paste(fragment, adduct, polarity, sep = "-", collapse=T) )
-
-    message("Writing merged parameters")
-    readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-parameters.tsv")))
-
-    message("Calculating predictions from data")
-    preds_from_data <-
-      fits %>%  tidyr::unnest(fit %>% purrr::map(broom::augment))
-    message("Writing fit predictions from data with residuals")
-    readr::write_tsv(preds_from_data, path = file.path(paste(outputPrefix, "-predictions-residuals.tsv", sep ="")))
-
-    # test residuals for normality
-    res_normality <- preds_from_data %>% dplyr::group_by(combinationId) %>%
-      dplyr::summarise(statistic=ifelse(sd(.resid)!=0, shapiro.test(.resid)$statistic,NA),
-                p.value=ifelse(sd(.resid)!=0, shapiro.test(.resid)$p.value,NA),
-                isNormal=ifelse(sd(.resid)!=0, shapiro.test(.resid)$p.value>=0.1, FALSE),
-                resSSq=ifelse(sd(.resid)!=0, sum((.resid)^2), NA),
-                meanResSSq=ifelse(sd(.resid)!=0, sum((.resid)^2)/(n()-length(unique(params$term))-1), NA))
-    message("Writing shapiro normality test results for residuals")
-    readr::write_tsv(res_normality, path = file.path(paste(outputPrefix, "-residuals-normality.tsv", sep ="")))
 
     message("Creating new x-values for predictions")
     # use tibble with combinationId for merging and create x-values for each fit (covering the complete x-axis ranges)
@@ -351,10 +260,141 @@ fits <-
       ) %>%
       dplyr::ungroup()
 
+    message("Creating nls.tibble.nested")
+    nls.tibble.nested <- nls.tibble %>%
+      tidyr::nest()
+    # run nls fits with automatics model selection based on AIC
+    message(
+      paste(
+        "Running nls.multstart on nls.tibble.nested with at most",
+        max_iter,
+        "iterations"
+      )
+    )
+
+    # create nested column fit containing the fit results
+    fits <- nls.tibble.nested %>%
+      dplyr::mutate(
+        fit = purrr::map(
+          data,
+          ~ nls.multstart::nls_multstart(
+            scanRelativeIntensity ~ flipr::dlnormPar(precursorCollisionEnergy, meanlog, sdlog, scale, shift),
+            data = .x,
+            iter = max_iter,
+            start_lower = start_lower,
+            start_upper = start_upper,
+            supp_errors = 'Y',
+            na.action = na.omit,
+            lower = lower,
+            upper = upper
+          )
+          ,
+          safely(x, otherwise = NA)
+        ),
+        fitFun = "dlnormPar",
+        info = purrr::map(fit, broom::glance),
+        params = purrr::map(fit, broom::tidy),
+        CI = purrr::map(
+          fit,
+          ~ nlstools::confint2(.x) %>%
+            data.frame() %>%
+            dplyr::rename(., conf.low = X2.5.., conf.high = X97.5..)
+        ),
+        preds_from_data = purrr::map(fit, broom::augment),
+        new_preds = purrr::map(fit, broom::augment, newdata = new_preds)
+      )
+    stopifnot(length(fits) > 0)
+
+    message(paste("Extracting fit info for", nrow(fits), "fits", sep = " "))
+    fits <- fits %>% dplyr::filter(!is.null(fit))
+    message(paste("Retaining", nrow(fits), "non-null fits", sep = " "))
+    #print(fits)
+    # get fit information / statistics
+    info <- fits %>%
+      dplyr::select(info, fitFun) %>%
+      tidyr::unnest(cols = c(info))
+    message("Extracting fit parameters")
+    # get fit parameters
+    params <- fits %>%
+      dplyr::select(params, fitFun) %>%
+      tidyr::unnest(cols = c(params))
+
+    message("Writing raw parameters")
+    readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-raw-parameters.tsv")))
+
+    message("Calculating confidence intervals")
+    # calculate confidence intervals for parameters
+    CI <- fits %>%
+      dplyr::select(CI) %>%
+      tidyr::unnest(cols = c(CI)) %>%
+      dplyr::group_by(., combinationId) %>%
+      dplyr::mutate(., term = c('meanlog', 'sdlog', 'scale', 'shift')) %>%
+      dplyr::ungroup()
+
+    # check that we only have a single model
+    stopifnot(length(unique(params$fitFun)) == 1)
+
+    lipidCreatorParams <-
+      createLipidCreatorParameters(params, instrumentId)
+    # TODO additional renormalization after grouping for each "species", adduct, polarity and ppmMassRange -> scale needs to fall into the range of 0-1
+    message("Writing LipidCreator parameters")
+    readr::write_csv(lipidCreatorParams, path = file.path(paste0(
+      outputPrefix, "-lipidcreator-parameters.csv"
+    )))
+
+    # merge parameters and CI estimates
+    message("Merging fit parameters and CI estimates")
+    params <-
+      merge(params, CI, by = dplyr::intersect(names(params), names(CI)))
+
+    message("Writing merged parameters")
+    readr::write_tsv(params, path = file.path(paste0(outputPrefix, "-parameters.tsv")))
+
+    message("Calculating predictions from data")
+    preds_from_data <- fits %>%
+      dplyr::select(preds_from_data) %>%
+      tidyr::unnest(cols = c(preds_from_data)) %>%
+      dplyr::group_by(combinationId) %>%
+      dplyr::mutate(
+        .std.resid = (.resid / sd(.resid)),
+        .m.resid = mean(.resid),
+        .sd.resid = sd(.resid)
+      ) %>%
+      dplyr::ungroup()
+
+    message("Writing fit predictions from data with residuals")
+    readr::write_tsv(preds_from_data, path = file.path(paste(
+      outputPrefix, "-predictions-residuals.tsv", sep = ""
+    )))
+
+    # test residuals for normality
+    res_normality <-
+      preds_from_data %>% dplyr::group_by(combinationId) %>%
+      dplyr::summarise(
+        # SW test is performed on the non-standardized residuals
+        statistic = ifelse(sd(.resid) != 0, shapiro.test(.resid)$statistic, NA),
+        p.value = ifelse(sd(.resid) != 0, shapiro.test(.resid)$p.value, NA),
+        isNormal = ifelse(
+          sd(.resid) != 0,
+          shapiro.test(.resid)$p.value >= 0.1,
+          FALSE
+        ),
+        resSSq = ifelse(sd(.resid) != 0, sum((.resid) ^ 2), NA),
+        meanResSSq = ifelse(sd(.resid) != 0,
+                            sum((.resid) ^ 2) / (dplyr::n() - length(unique(params$term)) - 1), NA)
+      )
+    message("Writing shapiro normality test results for residuals")
+    readr::write_tsv(res_normality, path = file.path(paste(
+      outputPrefix, "-residuals-normality.tsv", sep = ""
+    )))
+
     message("Recalculating predictions based on fit parameters")
     # recalculate predictions based on fit parameters
-    preds <- fits %>%
-      tidyr::unnest(fit %>% purrr::map(broom::augment, newdata = new_preds)) %>%
+    new_preds <- fits %>%
+      dplyr::select(new_preds) %>%
+      tidyr::unnest(cols = c(new_preds))
+
+    preds <- new_preds %>%
       merge(., max_min, by = "combinationId") %>%
       dplyr::group_by(., combinationId) %>%
       dplyr::filter(
@@ -364,14 +404,23 @@ fits <-
       ) %>%
       dplyr::rename(., scanRelativeIntensity = .fitted) %>%
       dplyr::ungroup()
-
-    message("Extracting fit details")
-    # get details of fits
-    fitinfo <-
-      info %>% dplyr::select(combinationId, fitFun, sigma, isConv, finTol, logLik, AIC, BIC, deviance, df.residual)
     message("Writing recalculated fit predictions")
     readr::write_tsv(preds, path = file.path(paste(outputPrefix, "-predictions.tsv", sep =
                                                      "")))
+    message("Extracting fit details")
+    # get details of fits
+    fitinfo <-  info %>%
+      dplyr::select(combinationId,
+                    fitFun,
+                    sigma,
+                    isConv,
+                    finTol,
+                    logLik,
+                    AIC,
+                    BIC,
+                    deviance,
+                    df.residual)
+
     message("Writing fit info")
     readr::write_tsv(fitinfo, path = file.path(paste(outputPrefix, "-fit-info.tsv", sep =
                                                        "")))

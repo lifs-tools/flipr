@@ -1,0 +1,97 @@
+---
+title: "introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(flipr)
+```
+
+## Usage ##
+
+### Creating a transition list with LipidCreator
+
+
+
+### Measuring a standard sample on an MS platform
+
+### Converting the raw MS data
+
+We use msConvert to convert the raw MS data for different vendor platforms into mzML.
+
+
+### Extracting fragment ion traces from the MS file 
+
+Transition extractor 
+
+### Anatomy of the feature table format (*-fip.tsv)
+
+The feature table `*-fip.tsv` is created by the transition extraction step and serves as the main data input for flipR- It holds one m/z feature per row, with the following columns, specifying its provenance, parameters and information that is used by downstream steps to maintain a mapping between input transition list and output parameter file for LipidCreator- The following columns are reported in the output file (some correspond to *.mzML elements / attributes, some come from LipidCreator / Skyline):
+
+- instrument
+- localDateTimeCreated
+- origin
+- scanNumber
+- polarity
+- basePeakMz
+- basePeakIntensity
+- totalIonCurrent
+- id
+- scanDefinition
+- msLevel
+- isolationWindowTargetMz[0]
+- isolationWindowLowerOffset[0]
+- isolationWindowUpperOffset[0]
+- precursorActivationType
+- precursorCollisionEnergy
+- precursorCollisionEnergyUnit
+- ionInjectionTime[0]
+- isolationMzMin[0]
+- isolationMzMax[0]
+- precursorCharge[0]
+- precursorMz[0]
+- msFunction
+- retentionTime
+- spectrumType
+- rawTic
+- group
+- foundMass
+- foundMassRange[ppm]
+- foundMassLowerBound
+- foundMassUpperBound
+- foundMassError[ppm]
+- foundIntensity
+- scanRelativeIntensity
+- calculatedMass
+- species
+- precursorAdduct
+- fragment
+- adduct
+
+### Fitting a model for multiple fragment ion traces over a CE sequence
+
+```R
+  library("flipr")
+  xics_file <- system.file("extdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
+  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
+```
+
+### LipidCreator Parameter Table (After model training and selection)
+The comma-separated lipid creator parameter file contains collision energy calculation parameters for each lipid class, as reported and concatenated by flipR- There are as many rows for each fragment, as there are parameters- The following columns are required in this file: 
+- instrument the PSI-MS CV term id identifying the instrument, e.g- MS:1002523 for Thermo Scientific Q Exactive HF.
+- class	the lipid class, e.g- 10-HDoHE, needs to be double quoted, when the name contains a comma.
+- adduct the precursor adduct for this lipid class, e.g- [M-H]1-.
+- fragment the fragment identifier- If no common name is available, use e.g- "m/z 121.0658"- The precursor must be reported as "precursor".
+- ParKey the model parameter name, currently one of "model", "meanlog", "sdlog", "scale", and "shift".
+- ParValue the model parameter values, currently, for "model" only "dlnormPar" is recognized- Other parameters are expected to be reported as double numbers with a "." as the decimal separator.

@@ -1,13 +1,13 @@
 Package: flipr
 Type: Package
-Title: Relative fragment intensity prediction for lipids
-Version: 1.0.5
+Title: Relative Fragment Intensity Prediction for Lipids
+Version: 1.0.6
 Authors@R: person("Nils","Hoffmann", email="nils.hoffmann@isas.de", role = c("aut","cre"))
 Description: Calculates non-linear models for relative fragment intensity prediction based on series of increasing collision energies for HCD and CID systems.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.4.4)
+Depends: R (>= 3.5.0)
 Imports:
     ggplot2,
     readr,
@@ -25,5 +25,8 @@ Imports:
     optparse
 Suggests:
     testthat,
-    pkgdown
-RoxygenNote: 6.1.0
+    pkgdown,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.0.1
+VignetteBuilder: knitr
