@@ -13,7 +13,7 @@ RUN R -f /tmp/install.R
 ADD install-custom.R /tmp/
 RUN R -f /tmp/install-custom.R
 LABEL application.version="1.0.6-testing"
-LABEL application.build.timestamp="2020-01-22T17:34:54+01:00"
+LABEL application.build.timestamp="2020-01-22T17:37:27+01:00"
 LABEL application.name="flipr"
 LABEL application.authors="Nils Hoffmann"
 LABEL application.maintainer=""
