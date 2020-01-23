@@ -18,17 +18,58 @@ knitr::opts_chunk$set(
 library(flipr)
 ```
 
-## Usage ##
+## Quick Start ##
+
+```R
+  library("flipr")
+  xics_file <- system.file("testdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
+  config <- system.file("testdata", "qex-HF-config.R", package = "flipr", mustWork = TRUE)
+  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
+```
+
+Prepare the data
+
+```R
+  subSetData <- xics_file %>%
+            dplyr::mutate(
+              precursorCollisionEnergyUnitLabel = dplyr::case_when(
+                precursorCollisionEnergyUnit == "electronvolt" ~ "Collision Energy [eV]",
+                precursorCollisionEnergyUnit == "normalized" ~ "Normalized Collision Energy",
+                TRUE ~ as.character(precursorCollisionEnergyUnit)
+              )
+            ) # captures anything else as character
+          dataIndex <- unique(subSetData$originId)[[1]]
+          message(paste0("Processing data from ", unique(subSetData$origin)))
+          subSetData$fragadd <-
+            paste(subSetData$fragment, subSetData$adduct, sep = " ")
+          subSetData$fragadd <-
+            factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass), ]$fragadd))
+          message(paste0(
+            "Using Fragment+Adduct levels ",
+            paste0(levels(subSetData$fragadd), collapse = " | ")
+          ))
+          color_scale <-
+            ggplot2::scale_colour_hue(
+              name = "Fragment",
+              limits = as.character(levels(subSetData$fragadd)),
+              aesthetics = c("colour", "fill")
+            )
+```
+
+## Usual Workflow ##
 
 ### Creating a transition list with LipidCreator
+Please consult the interactive tutorials within LipidCreator, the LipidCreator documentation and workshop materials at https://lifs.isas.de/lipidcreator for details on creating transition lists.
 
-
+Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.
 
 ### Measuring a standard sample on an MS platform
 
+We used a step size of 1 between collision energies (eV for CID with QTFO, NCE for HCD with Thermo QExHF) and repeated fragmentation between 
+
 ### Converting the raw MS data
 
-We use msConvert to convert the raw MS data for different vendor platforms into mzML.
+We use msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking.
 
 
 ### Extracting fragment ion traces from the MS file 
@@ -83,9 +124,12 @@ The feature table `*-fip.tsv` is created by the transition extraction step and s
 
 ```R
   library("flipr")
-  xics_file <- system.file("extdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
+  xics_file <- system.file("testdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
+  config <- system.file("testdata", "qex-HF-config.R", package = "flipr", mustWork = TRUE)
   fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
 ```
+
+The `fits` list now contains multiple elements:
 
 ### LipidCreator Parameter Table (After model training and selection)
 The comma-separated lipid creator parameter file contains collision energy calculation parameters for each lipid class, as reported and concatenated by flipR- There are as many rows for each fragment, as there are parameters- The following columns are required in this file: 

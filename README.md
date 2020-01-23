@@ -16,7 +16,7 @@ For Ubuntu, please install the following libraries:
   sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
 ```
 
-Your will require R>=3.4.4 for flipr. Start administrator's R session as follows, to install the packages into the site-wide (all users) library:
+Your will require R>=3.5.0 for flipr. Start administrator's R session as follows, to install the packages into the site-wide (all users) library:
 
 ```
   sudo -i R
@@ -58,7 +58,7 @@ To load the package, start an R session and type
 Type the following to see the package vignette / tutorial:
 
 ```R
-  vignette(flipr)
+  vignette('introduction', package = 'flipr')
 ```
 
 
