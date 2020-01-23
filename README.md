@@ -37,10 +37,30 @@ Load the devtools library:
 Run
 
 ```R
-  install_git("https://github.com/lifs-tools/flipr.git")
+  install_github("lifs-tools/flipr")
 ```
 
-Done!
+This will install the latest, potentially unstable development version of the package with all required dependencies into your local R installation.
+
+If you want to use a proper release version, referenced by a Git tag (here: v1.0.6) install the package as follows:
+
+```R
+  install_github("lifs-tools/flipr", ref="v1.0.6")
+```
+
+
+To load the package, start an R session and type
+
+```R
+  library(flipr)
+```
+
+Type the following to see the package vignette / tutorial:
+
+```R
+  vignette(flipr)
+```
+
 
 ## Building the Docker image ##
 
