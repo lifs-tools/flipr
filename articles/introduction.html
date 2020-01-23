@@ -83,21 +83,57 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(flipr)</a></code></pre></div>
-<div id="usage" class="section level2">
+<div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<a href="#quick-start" class="anchor"></a>Quick Start</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  config &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"qex-HF-config.R"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Prepare the data</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">  subSetData &lt;-<span class="st"> </span>xics_file <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">            </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">              <span class="dt">precursorCollisionEnergyUnitLabel =</span> dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">                precursorCollisionEnergyUnit <span class="op">==</span><span class="st"> "electronvolt"</span> <span class="op">~</span><span class="st"> "Collision Energy [eV]"</span>,</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">                precursorCollisionEnergyUnit <span class="op">==</span><span class="st"> "normalized"</span> <span class="op">~</span><span class="st"> "Normalized Collision Energy"</span>,</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">                <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(precursorCollisionEnergyUnit)</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">              )</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">            ) <span class="co"># captures anything else as character</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">          dataIndex &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData<span class="op">$</span>originId)[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">          <span class="kw"><a href="https://rdrr.io/r/base/message.html">message</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Processing data from "</span>, <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData<span class="op">$</span>origin)))</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">          subSetData<span class="op">$</span>fragadd &lt;-</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="st">            </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(subSetData<span class="op">$</span>fragment, subSetData<span class="op">$</span>adduct, <span class="dt">sep =</span> <span class="st">" "</span>)</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">          subSetData<span class="op">$</span>fragadd &lt;-</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="st">            </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(subSetData<span class="op">$</span>fragadd, <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData[<span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(subSetData<span class="op">$</span>calculatedMass), ]<span class="op">$</span>fragadd))</a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">          <span class="kw"><a href="https://rdrr.io/r/base/message.html">message</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">            <span class="st">"Using Fragment+Adduct levels "</span>,</a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">            <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(subSetData<span class="op">$</span>fragadd), <span class="dt">collapse =</span> <span class="st">" | "</span>)</a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">          ))</a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">          color_scale &lt;-</a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="st">            </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_colour_hue</a></span>(</a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">              <span class="dt">name =</span> <span class="st">"Fragment"</span>,</a>
+<a class="sourceLine" id="cb3-22" data-line-number="22">              <span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(subSetData<span class="op">$</span>fragadd)),</a>
+<a class="sourceLine" id="cb3-23" data-line-number="23">              <span class="dt">aesthetics =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"colour"</span>, <span class="st">"fill"</span>)</a>
+<a class="sourceLine" id="cb3-24" data-line-number="24">            )</a></code></pre></div>
+</div>
+<div id="usual-workflow" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usual-workflow" class="anchor"></a>Usual Workflow</h2>
 <div id="creating-a-transition-list-with-lipidcreator" class="section level3">
 <h3 class="hasAnchor">
 <a href="#creating-a-transition-list-with-lipidcreator" class="anchor"></a>Creating a transition list with LipidCreator</h3>
+<p>Please consult the interactive tutorials within LipidCreator, the LipidCreator documentation and workshop materials at <a href="https://lifs.isas.de/lipidcreator" class="uri">https://lifs.isas.de/lipidcreator</a> for details on creating transition lists.</p>
+<p>Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.</p>
 </div>
 <div id="measuring-a-standard-sample-on-an-ms-platform" class="section level3">
 <h3 class="hasAnchor">
 <a href="#measuring-a-standard-sample-on-an-ms-platform" class="anchor"></a>Measuring a standard sample on an MS platform</h3>
+<p>We used a step size of 1 between collision energies (eV for CID with QTFO, NCE for HCD with Thermo QExHF) and repeated fragmentation between</p>
 </div>
 <div id="converting-the-raw-ms-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#converting-the-raw-ms-data" class="anchor"></a>Converting the raw MS data</h3>
-<p>We use msConvert to convert the raw MS data for different vendor platforms into mzML.</p>
+<p>We use msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking.</p>
 </div>
 <div id="extracting-fragment-ion-traces-from-the-ms-file" class="section level3">
 <h3 class="hasAnchor">
@@ -153,9 +189,11 @@
 <div id="fitting-a-model-for-multiple-fragment-ion-traces-over-a-ce-sequence" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fitting-a-model-for-multiple-fragment-ion-traces-over-a-ce-sequence" class="anchor"></a>Fitting a model for multiple fragment ion traces over a CE sequence</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">  fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  config &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"qex-HF-config.R"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>The <code>fits</code> list now contains multiple elements:</p>
 </div>
 <div id="lipidcreator-parameter-table-after-model-training-and-selection" class="section level3">
 <h3 class="hasAnchor">
@@ -171,7 +209,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#usage">Usage</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+      <li><a href="#usual-workflow">Usual Workflow</a></li>
       </ul>
 </div>
       </div>
