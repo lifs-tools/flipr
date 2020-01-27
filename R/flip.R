@@ -169,7 +169,9 @@ flip <-
                 splitData$fragment <-
                   factor(splitData$fragment,
                          levels = unique(splitData[order(splitData$calculatedMass), ]$fragment))
-
+                readr::write_tsv(splitData, path = file.path(
+                  paste(fileName, "-raw-plots-input.tsv", sep = "")
+                ))
                 flipr::plotRawTicVsTotalIonCurrent(
                   data = splitData,
                   basename = fileName,
@@ -193,6 +195,9 @@ flip <-
                 splitData.noNAs <-
                   splitData[!is.na(splitData$foundMass),]
 
+                readr::write_tsv(splitData, path = file.path(
+                  paste(fileName, "-data-plots-input.tsv", sep = "")
+                ))
                 flipr::plotPrecCollEnergyVsFoundIntensity(
                   splitData.noNAs,
                   fileName,
