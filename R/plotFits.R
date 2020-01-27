@@ -142,12 +142,18 @@ plotPredictedFits <-
     preds$fragadd <- paste(preds$fragment, preds$adduct, sep = " ")
     preds$fragadd <-
       factor(preds$fragadd, levels = unique(preds[order(preds$calculatedMass), ]$fragadd))
+    preds$`foundMassRange[ppm]` <-
+      factor(preds$`foundMassRange[ppm]`,
+             levels = unique(preds$`foundMassRange[ppm]`))
 
     nls.tibble <- nlsFitPlotsOutputList$nls.tibble
     nls.tibble$fragadd <-
       paste(nls.tibble$fragment, nls.tibble$adduct, sep = " ")
     nls.tibble$fragadd <-
       factor(nls.tibble$fragadd, levels = unique(nls.tibble[order(nls.tibble$calculatedMass), ]$fragadd))
+    nls.tibble$`foundMassRange[ppm]` <-
+      factor(nls.tibble$`foundMassRange[ppm]`,
+             levels = sort(as.numeric(unique(nls.tibble$`foundMassRange[ppm]`))))
     nls.tibble.mean <-
       nls.tibble %>% dplyr::group_by(
         fragment,
@@ -239,6 +245,9 @@ plotResidualsMeanSumSq <-
     data$fragadd <- paste(data$fragment, data$adduct, sep = " ")
     data$fragadd <-
       factor(data$fragadd, levels = unique(data[order(data$calculatedMass), ]$fragadd))
+    data$`foundMassRange[ppm]` <-
+      factor(data$`foundMassRange[ppm]`,
+             levels = sort(as.numeric(unique(data$`foundMassRange[ppm]`))))
     resplot <- ggplot2::ggplot(data = data) +
       ggplot2::geom_point(
         ggplot2::aes(
@@ -314,11 +323,14 @@ plotResidualsQQ <-
         sep = "\\|",
         remove = FALSE
       )
+    preds_from_data$`foundMassRange[ppm]` <-
+      factor(preds_from_data$`foundMassRange[ppm]`,
+             levels = sort(as.numeric(unique(preds_from_data$`foundMassRange[ppm]`))))
     preds_from_data$fragadd <-
       paste(preds_from_data$fragment, preds_from_data$adduct, sep = " ")
     preds_from_data$fragadd <-
       factor(preds_from_data$fragadd,
-             levels = unique(preds_from_data[order(preds_from_data$calculatedMass), ]$fragadd))
+             levels = unique(preds_from_data[order(as.numeric(preds_from_data$calculatedMass)), ]$fragadd))
     resplot <- ggplot2::ggplot(preds_from_data) +
       ggplot2::aes(shape = isNormal,
                    sample = .std.resid,
@@ -387,11 +399,14 @@ plotResiduals <-
         sep = "\\|",
         remove = FALSE
       )
+    preds_from_data$`foundMassRange[ppm]` <-
+      factor(preds_from_data$`foundMassRange[ppm]`,
+             levels = sort(as.numeric(unique(preds_from_data$`foundMassRange[ppm]`))))
     preds_from_data$fragadd <-
       paste(preds_from_data$fragment, preds_from_data$adduct, sep = " ")
     preds_from_data$fragadd <-
       factor(preds_from_data$fragadd,
-             levels = unique(preds_from_data[order(preds_from_data$calculatedMass), ]$fragadd))
+             levels = unique(preds_from_data[order(as.numeric(preds_from_data$calculatedMass)), ]$fragadd))
     resplot <-
       ggplot2::ggplot(preds_from_data, ggplot2::aes(col = fragadd)) +
       ggplot2::geom_point(ggplot2::aes(precursorCollisionEnergy, .resid),

@@ -18,6 +18,11 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
     )  + ggplot2::labs(colour = 'Fragment') +
     ggplot2::facet_wrap(fragadd ~ data$`foundMassRange[ppm]`, ncol =6, labeller = ggplot2::label_wrap_gen(multi_line=FALSE)) +
     ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    )) +
     ggplot2::ylab("Total Ion Current [a.u.]") + ggplot2::xlab("Raw Total Ion Current [a.u.]") +
     color_scale
   ggplot2::ggsave(
