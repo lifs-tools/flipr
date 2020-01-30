@@ -4,6 +4,7 @@
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotNumberOfSamplesPerCombinationId <-
@@ -19,11 +20,6 @@ plotNumberOfSamplesPerCombinationId <-
     plot <- ggplot2::ggplot(data) +
       ggplot2::geom_boxplot(ggplot2::aes(x = combinationId, y = samplesPerCombinationId, colour =
                                            combinationId)) +
-      #ggplot2::facet_wrap(
-      #  fragadd + `foundMassRange[ppm]` ~ polarity,
-      #  labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
-      #  ncol = 6
-      #) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
       ggplot2::labs(
         title = paste0(unique(data$species), " ", unique(data$group)),
@@ -40,6 +36,7 @@ plotNumberOfSamplesPerCombinationId <-
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(plot)
   }
 #' Plots the confidence intervals for the parameters used for model optimization.
 #' @param nlsFitPlotsOutputList the FIP fits output list.
@@ -48,6 +45,7 @@ plotNumberOfSamplesPerCombinationId <-
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotParameterConfidenceIntervals <-
@@ -105,6 +103,7 @@ plotParameterConfidenceIntervals <-
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(ciplot)
   }
 
 #' Plots the predicted fits.
@@ -113,6 +112,7 @@ plotParameterConfidenceIntervals <-
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotPredictedFits <-
@@ -186,7 +186,6 @@ plotPredictedFits <-
         size = 0.5,
         alpha = 0.75
       ) +
-      #    geom_ribbon(aes(precursorCollisionEnergy, ymin = CI_low, ymax = CI_high), fill = 'lightgray', alpha = .2, preds) +
       ggplot2::geom_line(
         ggplot2::aes(precursorCollisionEnergy, scanRelativeIntensity, group = adduct),
         colour = "blue",
@@ -203,13 +202,13 @@ plotPredictedFits <-
       ggplot2::ylab('Relative Intensity') +
       ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitPlotsOutputList$nls.tibble)) +
       color_scale
-    #theme(legend.position = c(0.9, 0.15))
     ggplot2::ggsave(
       fitplot,
       filename = paste0(outputPrefix, "-fit.", plotFormat),
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(fitplot)
   }
 
 #' Plots the mean of the squared sum of residuals.
@@ -218,6 +217,7 @@ plotPredictedFits <-
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotResidualsMeanSumSq <-
@@ -259,11 +259,6 @@ plotResidualsMeanSumSq <-
         size = 2,
         data
       ) +
-      # ggplot2::facet_wrap(
-      #   fragadd ~ `foundMassRange[ppm]`,
-      #   labeller = ggplot2::label_wrap_gen(multi_line=FALSE),
-      #   ncol = 2
-      # ) +
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
       ggplot2::labs(
         title = paste0(unique(data$species), " ", unique(data$group)),
@@ -286,6 +281,7 @@ plotResidualsMeanSumSq <-
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(resplot)
   }
 
 #' Plots the residuals quantile-quantile plot between standardized residuals and an assumed normal distribution.
@@ -294,6 +290,7 @@ plotResidualsMeanSumSq <-
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotResidualsQQ <-
@@ -366,6 +363,7 @@ plotResidualsQQ <-
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(resplot)
   }
 
 #' Plots the residuals between predicted and measured values.
@@ -374,6 +372,7 @@ plotResidualsQQ <-
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
+#' @return the ggplot object.
 #' @importFrom magrittr %>%
 #' @export
 plotResiduals <-
@@ -414,7 +413,6 @@ plotResiduals <-
                           preds_from_data) +
       ggplot2::geom_rug(
         ggplot2::aes(precursorCollisionEnergy, .resid),
-        #colour = preds_from_data$fragadd,
         alpha = 0.5,
         sides = "b",
         preds_from_data
@@ -447,6 +445,7 @@ plotResiduals <-
       width = plotDimensions$width,
       height = plotDimensions$height
     )
+    return(resplot)
   }
 
 #' Creates the x-axis plot label depending on precursorActivationType and precursorCollisionEnergyUnit as new columns precursorCollisionEnergyUnitLabel.

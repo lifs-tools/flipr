@@ -3,6 +3,8 @@ cache:
   packages: true
 r:
   - release
+r_packages:
+  - covr
 
 warnings_are_errors: false
 before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
@@ -11,3 +13,7 @@ deploy:
   provider: script
   script: Rscript -e 'pkgdown::deploy_site_github()'
   skip_cleanup: true
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
+

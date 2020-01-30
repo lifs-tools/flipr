@@ -31,6 +31,7 @@ plotRawTicVsTotalIonCurrent <- function(data, basename, plotFormat="png", plotDi
     width = plotDimensions$width,
     height = plotDimensions$height
   )
+  return(rawTicVsTotalIonCurrentPlot)
 }
 
 #' Plots a PPM deviation boxplot for all fragments.
@@ -70,7 +71,7 @@ plotFragmentPpmBoxplot <- function(data, basename, plotFormat="png", plotDimensi
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  fpbPlot
+  return(fpbPlot)
 }
 
 #' Plots precursor collision energy vs found raw intensity.
@@ -115,6 +116,7 @@ plotPrecCollEnergyVsFoundIntensity <- function(data, basename, plotFormat="png",
     width = plotDimensions$width,
     height = plotDimensions$height
   )
+  return(pceFiPlot)
 }
 
 #' Plots precursor collision energy vs. total scan intensity normalized relative fragment intensity in separate panels.
@@ -160,7 +162,7 @@ plotPrecCollEnergyVsScanRelativeIntensityNormalized <- function(data, basename, 
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  precCeVsIsrnPlot
+  return(precCeVsIsrnPlot)
 }
 
 #' Plots precursor collision energy vs. total scan intensity normalized relative fragment intensity overlaid on one panel.
@@ -205,7 +207,7 @@ plotPrecCollEnergyVsScanRelativeIntensityOverlay <- function(data, basename, plo
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  precCeVsIsrnOverlayPlot
+  return(precCeVsIsrnOverlayPlot)
 }
 
 #' Plots the precursor collision energy vs. the fragment mass error in ppm.
@@ -249,7 +251,7 @@ plotPrecCollEnergyVsMassErrorPpm <- function(data, basename, plotFormat="png", p
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  precCeVsMerrPpmmPlot
+  return(precCeVsMerrPpmmPlot)
 }
 
 #' Plots the mass density distribution.
@@ -315,7 +317,7 @@ plotMassDensityDistribution <- function(data, basename, plotFormat="png", plotDi
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  mddPlot
+  return(mddPlot)
 }
 #' Plots m/z vs. the mass error in ppm.
 #' @param data the FIP data to plot.
@@ -356,7 +358,7 @@ plotMzVsMerrPpm <- function(data, basename, plotFormat="png", plotDimensions=lis
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  plotMzVsMerrPpm
+  return(plotMzVsMerrPpm)
 }
 #' Plots the scan relative intensity histogram.
 #' @param data the FIP data to plot.
@@ -400,5 +402,5 @@ plotScanRelativeIntensityHistogram <- function(data, basename, plotFormat="png",
     width = plotDimensions$width,
     height = plotDimensions$height
   )
-  plot
+  return(plot)
 }

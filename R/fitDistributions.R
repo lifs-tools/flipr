@@ -157,10 +157,10 @@ createLipidCreatorParameters <-
 #' @param group the group that this data belongs to.
 #' @param instrumentId the instrumentId of this data.
 #' @param skipGroupOutput whether to skip writing of grouping information (for debugging).
-#' @param start_lower the lower bound to start the parameter grid search.
-#' @param start_upper the upper bound to start the parameter grid search.
-#' @param lower the lower bound for the parameter grid search.
-#' @param upper the upper bound for the parameter grid search.
+#' @param start_lower the lower bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param start_upper the upper bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param lower the lower bound for the parameter estimates, argument is passed to nlsLM.
+#' @param upper the upper bound for the parameter estimates, argument is passed to nlsLM.
 #' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @param max_iter the maximum number of iterations of the model to calculate.
 #' @importFrom magrittr %>%

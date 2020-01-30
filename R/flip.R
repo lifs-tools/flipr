@@ -10,10 +10,10 @@
 #' @param filePattern the file pattern for 'fip' files.
 #' @param dataPlots whether data plots (diagnostics) should be created.
 #' @param minPrecursorCollisionEnergy the minimum precursor collision energy to consider for model training.
-#' @param start_lower the lower bound to start the parameter grid search.
-#' @param start_upper the upper bound to start the parameter grid search.
-#' @param lower the lower bound for the parameter grid search.
-#' @param upper the upper bound for the parameter grid search.
+#' @param start_lower the lower bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param start_upper the upper bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param lower the lower bound for the parameter estimates, argument is passed to nlsLM.
+#' @param upper the upper bound for the parameter estimates, argument is passed to nlsLM.
 #' @param trainModel whether the model should be calculated.
 #' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
 #' @param max_iter the number of combinations for grid expansion starting parameters.
