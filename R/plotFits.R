@@ -1,5 +1,5 @@
 #' Plots the number of data samples for each combinationId.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
@@ -8,12 +8,12 @@
 #' @importFrom magrittr %>%
 #' @export
 plotNumberOfSamplesPerCombinationId <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
            color_scale = ggplot2::scale_colour_hue()) {
-    data <- nlsFitPlotsOutputList$nls.tibble.unfiltered
+    data <- nlsFitsList$nls.tibble.unfiltered
     data$fragadd <- paste(data$fragment, data$adduct, sep = " ")
     data$fragadd <-
       factor(data$fragadd, levels = unique(data[order(data$calculatedMass), ]$fragadd))
@@ -39,7 +39,7 @@ plotNumberOfSamplesPerCombinationId <-
     return(plot)
   }
 #' Plots the confidence intervals for the parameters used for model optimization.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param combinationId the combinationId for the case to plot.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
@@ -49,7 +49,7 @@ plotNumberOfSamplesPerCombinationId <-
 #' @importFrom magrittr %>%
 #' @export
 plotParameterConfidenceIntervals <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            combinationId,
            outputPrefix,
            plotFormat = "png",
@@ -57,7 +57,7 @@ plotParameterConfidenceIntervals <-
            color_scale = ggplot2::scale_colour_hue()) {
     #separate out columns that are united in combinationId
     params <-
-      nlsFitPlotsOutputList$params %>% tidyr::separate(
+      nlsFitsList$params %>% tidyr::separate(
         combinationId,
         c(
           "species",
@@ -107,7 +107,7 @@ plotParameterConfidenceIntervals <-
   }
 
 #' Plots the predicted fits.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
@@ -116,14 +116,14 @@ plotParameterConfidenceIntervals <-
 #' @importFrom magrittr %>%
 #' @export
 plotPredictedFits <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
            color_scale = ggplot2::scale_colour_hue()) {
     #predictions plot
     preds <-
-      nlsFitPlotsOutputList$preds %>% tidyr::separate(
+      nlsFitsList$preds %>% tidyr::separate(
         combinationId,
         c(
           "species",
@@ -146,7 +146,7 @@ plotPredictedFits <-
       factor(preds$`foundMassRange[ppm]`,
              levels = unique(preds$`foundMassRange[ppm]`))
 
-    nls.tibble <- nlsFitPlotsOutputList$nls.tibble
+    nls.tibble <- nlsFitsList$nls.tibble
     nls.tibble$fragadd <-
       paste(nls.tibble$fragment, nls.tibble$adduct, sep = " ")
     nls.tibble$fragadd <-
@@ -200,7 +200,7 @@ plotPredictedFits <-
       ggplot2::theme_bw(base_size = 12, base_family = 'Helvetica') +
       ggplot2::labs(title = paste0(unique(preds$species), " ", unique(preds$group)), colour = 'Fragment') +
       ggplot2::ylab('Relative Intensity') +
-      ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitPlotsOutputList$nls.tibble)) +
+      ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitsList$nls.tibble)) +
       color_scale
     ggplot2::ggsave(
       fitplot,
@@ -212,7 +212,7 @@ plotPredictedFits <-
   }
 
 #' Plots the mean of the squared sum of residuals.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
@@ -221,13 +221,13 @@ plotPredictedFits <-
 #' @importFrom magrittr %>%
 #' @export
 plotResidualsMeanSumSq <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
            color_scale = ggplot2::scale_colour_hue()) {
     #residuals plot of mean sum of squared residuals
-    data <- nlsFitPlotsOutputList$res_normality %>% tidyr::separate(
+    data <- nlsFitsList$res_normality %>% tidyr::separate(
       combinationId,
       c(
         "species",
@@ -285,7 +285,7 @@ plotResidualsMeanSumSq <-
   }
 
 #' Plots the residuals quantile-quantile plot between standardized residuals and an assumed normal distribution.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
@@ -294,7 +294,7 @@ plotResidualsMeanSumSq <-
 #' @importFrom magrittr %>%
 #' @export
 plotResidualsQQ <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
@@ -302,8 +302,8 @@ plotResidualsQQ <-
     #residuals quantile-quantile plot
     preds_from_data <-
       dplyr::left_join(
-        nlsFitPlotsOutputList$preds_from_data,
-        nlsFitPlotsOutputList$res_normality,
+        nlsFitsList$preds_from_data,
+        nlsFitsList$res_normality,
         by = c("combinationId")
       ) %>% tidyr::separate(
         combinationId,
@@ -367,7 +367,7 @@ plotResidualsQQ <-
   }
 
 #' Plots the residuals between predicted and measured values.
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
@@ -376,14 +376,14 @@ plotResidualsQQ <-
 #' @importFrom magrittr %>%
 #' @export
 plotResiduals <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
            color_scale = ggplot2::scale_colour_hue()) {
     #Residualplot
     preds_from_data <-
-      nlsFitPlotsOutputList$preds_from_data %>% tidyr::separate(
+      nlsFitsList$preds_from_data %>% tidyr::separate(
         combinationId,
         c(
           "species",
@@ -434,7 +434,7 @@ plotResiduals <-
       ggplot2::ylab(expression(paste(
         "Residuals (", Delta, "(", y, ",", yhat, ")", ")", sep = " "
       ))) +
-      ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitPlotsOutputList$nls.tibble)) +
+      ggplot2::xlab(flipr::collisionEnergyLabel(nlsFitsList$nls.tibble)) +
       ggplot2::scale_y_continuous(limits = c(-0.1, 0.1)) +
       color_scale
     # +
@@ -461,60 +461,63 @@ collisionEnergyLabel <- function(data) {
 }
 
 #' Plots information about the fits (residuals, predictions, confidence intervals).
-#' @param nlsFitPlotsOutputList the FIP fits output list.
+#' @param nlsFitsList the FIP fits output list.
 #' @param outputPrefix the basename (identifying a case) for the plot.
 #' @param plotFormat the format, passed to \code{ggplot2::ggsave}.
 #' @param plotDimensions the dimensions of the plot.
 #' @param color_scale the shared color scale to identify fragment and adduct pairs.
 #' @importFrom magrittr %>%
+#' @return a named list with all grobs of the plots (the output of ggplot).
 #' @export
 plotFits <-
-  function(nlsFitPlotsOutputList,
+  function(nlsFitsList,
            outputPrefix,
            plotFormat = "png",
            plotDimensions = list(width = 11.69, height = 8.27),
            color_scale = ggplot2::scale_colour_hue()) {
-    plotNumberOfSamplesPerCombinationId(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots <- list()
+    fitPlots[["numberOfSamplesPerCombinationId"]] <- plotNumberOfSamplesPerCombinationId(
+      nlsFitsList = nlsFitsList,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
-    plotResiduals(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots[["residuals"]] <- plotResiduals(
+      nlsFitsList = nlsFitsList,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
-    plotResidualsQQ(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots[["residualsQQ"]] <- plotResidualsQQ(
+      nlsFitsList = nlsFitsList,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
-    plotResidualsMeanSumSq(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots[["residualsMeanSumSq"]] <- plotResidualsMeanSumSq(
+      nlsFitsList = nlsFitsList,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
-    plotPredictedFits(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots[["predictedFits"]] <- plotPredictedFits(
+      nlsFitsList = nlsFitsList,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
-    plotParameterConfidenceIntervals(
-      nlsFitPlotsOutputList = nlsFitPlotsOutputList,
+    fitPlots[["parameterConfidenceIntervals"]] <- plotParameterConfidenceIntervals(
+      nlsFitsList = nlsFitsList,
       combinationId = combinationId,
       outputPrefix = outputPrefix,
       plotFormat = plotFormat,
       plotDimensions = plotDimensions,
       color_scale = color_scale
     )
+    return(fitPlots)
   }

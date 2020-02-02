@@ -1,4 +1,3 @@
-
 #' Calculate non linear regression models.
 #'
 #' Calculates non linear regression models by performing an iterative grid search within the coordinate bounds provided
@@ -41,7 +40,7 @@ flip <-
         list.files(path = projectDir,
                    pattern = filePattern,
                    full.names = TRUE)
-      fip_fits <- sapply(fip_files, function(fip_file) {
+      fip_fits <- purrr::map(fip_files, function(fip_file) {
         message(paste("Creating plots for file", fip_file, "\n", sep = " "))
         colspec <- readr::cols(
           .default = readr::col_double(),
@@ -69,7 +68,8 @@ flip <-
           adduct = readr::col_character()
         )
 
-        originalData <- readr::read_tsv(fip_file, col_types = colspec)
+        originalData <-
+          readr::read_tsv(fip_file, col_types = colspec)
         message(
           paste(
             "Filtering",
@@ -103,7 +103,8 @@ flip <-
           baseFileName, "-origin-index-map.tsv", sep = ""
         )))
         # split by origin to allow better comparability / training
-        splitOriginalData <- split(originalData, originalData$origin)
+        splitOriginalData <-
+          split(originalData, originalData$origin)
         message(paste(
           "Split data into",
           length(splitOriginalData),
@@ -112,189 +113,89 @@ flip <-
             originalData$origin
           )), collapse = ",")
         ))
-        lapply(splitOriginalData, function(splitOriginalData, lengthOfIndex) {
-          subSetData <- splitOriginalData %>%
-            dplyr::mutate(
-              precursorCollisionEnergyUnitLabel = dplyr::case_when(
-                precursorCollisionEnergyUnit == "electronvolt" ~ "Collision Energy [eV]",
-                precursorCollisionEnergyUnit == "normalized" ~ "Normalized Collision Energy",
-                TRUE ~ as.character(precursorCollisionEnergyUnit)
+        sodLists <-
+          purrr::map(splitOriginalData, function(splitOriginalData,
+                                                 lengthOfIndex) {
+            sodList <- list()
+            subSetData <- splitOriginalData %>%
+              dplyr::mutate(
+                precursorCollisionEnergyUnitLabel = dplyr::case_when(
+                  precursorCollisionEnergyUnit == "electronvolt" ~ "Collision Energy [eV]",
+                  precursorCollisionEnergyUnit == "normalized" ~ "Normalized Collision Energy",
+                  TRUE ~ as.character(precursorCollisionEnergyUnit)
+                )
+              ) # captures anything else as character
+            dataIndex <- unique(subSetData$originId)[[1]]
+            message(paste0("Processing data from ", unique(subSetData$origin)))
+            subSetData$fragadd <-
+              paste(subSetData$fragment, subSetData$adduct, sep = " ")
+            subSetData$fragadd <-
+              factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass),]$fragadd))
+            message(paste0(
+              "Using Fragment+Adduct levels ",
+              paste0(levels(subSetData$fragadd), collapse = " | ")
+            ))
+            color_scale <-
+              ggplot2::scale_colour_hue(
+                name = "Fragment",
+                limits = as.character(levels(subSetData$fragadd)),
+                aesthetics = c("colour", "fill")
               )
-            ) # captures anything else as character
-          dataIndex <- unique(subSetData$originId)[[1]]
-          message(paste0("Processing data from ", unique(subSetData$origin)))
-          subSetData$fragadd <-
-            paste(subSetData$fragment, subSetData$adduct, sep = " ")
-          subSetData$fragadd <-
-            factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass), ]$fragadd))
-          message(paste0(
-            "Using Fragment+Adduct levels ",
-            paste0(levels(subSetData$fragadd), collapse = " | ")
-          ))
-          color_scale <-
-            ggplot2::scale_colour_hue(
-              name = "Fragment",
-              limits = as.character(levels(subSetData$fragadd)),
-              aesthetics = c("colour", "fill")
-            )
-          fileName <-
-            paste0(baseFileName, "-", dataIndex, "-of-", lengthOfIndex)
-          message(paste0("Writing to file ", fileName))
-          if (nrow(subSetData) > 0) {
-            if (dataPlots) {
-              # split dataframe based on polarity
-              dfl <- split(subSetData, subSetData$polarity)
+            fileName <-
+              paste0(baseFileName, "-", dataIndex, "-of-", lengthOfIndex)
+            message(paste0("Writing to file ", fileName))
+            # browser()
+            if (nrow(subSetData) > 0) {
+              if (dataPlots) {
+                dataPlotsList <- flipr::createDataPlots(
+                  fileName = fileName,
+                  subSetData = subSetData,
+                  plotFormat = plotFormat,
+                  plotDimensions = a4r,
+                  color_scale = color_scale
+                )
+                sodList[["dataPlots"]] <- dataPlotsList
+              } else {
+                message(
+                  paste(
+                    "Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"
+                  )
+                )
+                sodList[["dataPlots"]] <- list()
+              }
 
-              lapply(dfl, function(splitData) {
-                customTheme <-
-                  ggplot2::theme_get() + ggplot2::theme(axis.text.x  = ggplot2::element_text(angle = 90, vjust = 0.5))
-                ggplot2::theme_set(customTheme)
-                polarity <- unique(splitData$polarity)
-                fileName <- paste(fileName, polarity, sep = "-")
-
-                message("fragment-ppm-boxplot")
-                ppms <- sort(unique(splitData$`foundMassRange[ppm]`))
-                splitData$`foundMassRange[ppm]` <-
-                  paste(splitData$`foundMassRange[ppm]`, "[ppm]", sep = " ")
-                splitData$`foundMassRange[ppm]` <-
-                  factor(splitData$`foundMassRange[ppm]`,
-                         levels = paste(ppms, "[ppm]", sep = " "))
-
-                splitData$fragadd <-
-                  paste(splitData$fragment, splitData$adduct, sep = " ")
-                splitData$fragadd <-
-                  factor(splitData$fragadd,
-                         levels = unique(splitData[order(splitData$calculatedMass), ]$fragadd))
-
-                splitData$fragment <-
-                  factor(splitData$fragment,
-                         levels = unique(splitData[order(splitData$calculatedMass), ]$fragment))
-                readr::write_tsv(splitData, path = file.path(
-                  paste(fileName, "-raw-plots-input.tsv", sep = "")
-                ))
-                flipr::plotRawTicVsTotalIonCurrent(
-                  data = splitData,
-                  basename = fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r
+              if (trainModel) {
+                sodList[["fitResults"]] <-
+                  flipr::createFits(
+                    fileName,
+                    subSetData,
+                    instrumentId,
+                    skipGroupOutput,
+                    start_lower,
+                    start_upper,
+                    lower,
+                    upper,
+                    minDataPoints,
+                    max_iter,
+                    plotFormat,
+                    plotDimensions = a4r,
+                    color_scale = color_scale
+                  )
+              } else {
+                message(
+                  paste(
+                    "Skipping training of models. Set argument 'trainModel=TRUE' to create!"
+                  )
                 )
-                flipr::plotFragmentPpmBoxplot(
-                  splitData,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r
-                )
-
-                splitData.NAs <-
-                  subset(splitData, subset = is.na(splitData$foundMass))
-                if (nrow(splitData.NAs) > 0) {
-                  readr::write_tsv(splitData.NAs, path = file.path(
-                    paste(fileName, "-no-ions-found.tsv", sep = "")
-                  ))
-                }
-                splitData.noNAs <-
-                  splitData[!is.na(splitData$foundMass),]
-
-                readr::write_tsv(splitData, path = file.path(
-                  paste(fileName, "-data-plots-input.tsv", sep = "")
-                ))
-                flipr::plotPrecCollEnergyVsFoundIntensity(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotPrecCollEnergyVsMassErrorPpm(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotMassDensityDistribution(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotMzVsMerrPpm(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-                flipr::plotScanRelativeIntensityHistogram(
-                  splitData.noNAs,
-                  fileName,
-                  plotFormat = plotFormat,
-                  plotDimensions = a4r,
-                  color_scale = color_scale
-                )
-              })
+                sodList[["fitResults"]] <- list()
+              }
             } else {
-              message(
-                paste(
-                  "Skipping creation of data plots. Set argument 'dataPlots=TRUE' to create!"
-                )
-              )
+              warning(paste("No data available for", fip_file, sep = " "))
             }
-
-            if (trainModel) {
-              dfl <- split(subSetData, subSetData$polarity)
-              lapply(dfl, function(splitData,
-                                   splitFileName,
-                                   plotFormat) {
-                polarity <- unique(splitData$polarity)
-                splitFileName <-
-                  paste(splitFileName, polarity, sep = "-")
-                stopifnot(length(unique(splitData$group)) == 1)
-                nlsFitOutputList <- flipr::fits(
-                  tibble = splitData,
-                  outputPrefix = splitFileName,
-                  group = unique(splitData$group)[[1]],
-                  instrumentId = instrumentId,
-                  skipGroupOutput = skipGroupOutput,
-                  start_lower = start_lower,
-                  start_upper = start_upper,
-                  lower = lower,
-                  upper = upper,
-                  minDataPoints = minDataPoints,
-                  max_iter = max_iter
-                )
-                flipr::plotFits(
-                  nlsFitOutputList,
-                  splitFileName,
-                  plotFormat = plotFormat,
-                  color_scale = color_scale
-                )
-              }, fileName, plotFormat)
-            }
-            # charge and adduct dependency, mass error influence on intensity ?
-
-            # subset by fragment
-          } else {
-            warning(paste("No data available for", fip_file, sep = " "))
-          }
-        }, lengthOfIndex = length(splitOriginalData))
-        list(name = baseFileName, fits = nlsFitOutputList)
-      }, simplify = FALSE, USE.NAMES = TRUE)
+            return(sodList)
+          }, lengthOfIndex = length(splitOriginalData))
+        return(list(name = baseFileName, fits = sodLists))
+      })
     }, error = function(e) {
       print(e)
       return(list())
@@ -302,4 +203,202 @@ flip <-
       setwd(oldwd)
     })
     fip_fits
+  }
+
+#' Create the fragment model fits and fit plots for an FIP table.
+#'
+#' @param fileName the base filename of the FIP table, without the file extension.
+#' @param subsetData the data subset.
+#' @param instrumentId the instrumentId of this data.
+#' @param skipGroupOutput whether to skip writing of grouping information (for debugging).
+#' @param start_lower the lower bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param start_upper the upper bound to start the parameter grid search, argument is passed to nls_multstart.
+#' @param lower the lower bound for the parameter estimates, argument is passed to nlsLM.
+#' @param upper the upper bound for the parameter estimates, argument is passed to nlsLM.
+#' @param minDataPoints the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.
+#' @param max_iter the maximum number of iterations of the model to calculate.
+#' @param plotFormat the plot format, as supported by \code{ggplot2::ggsave}.
+#' @param plotDimensions the plot dimensions to use, when printing the plot object to the output device.
+#' @param color_scale the ggplot2 color scale to use for fragments.
+#' @return a list with a named entry of 'fits', containing the model fitting results, and a named entry 'fitPlots', containing ggplot grob object for the corresponding plot.
+#' @export
+createFits <- function(fileName,
+                       subSetData,
+                       instrumentId,
+                       skipGroupOutput,
+                       start_lower,
+                       start_upper,
+                       lower,
+                       upper,
+                       minDataPoints,
+                       max_iter,
+                       plotFormat = "PNG",
+                       plotDimensions = list(width = 11.69,
+                                             height = 8.27),
+                       color_scale = ggplot2::scale_colour_hue()) {
+  dfl <- split(subSetData, subSetData$polarity)
+  purrr::map(dfl, function(splitData,
+                       splitFileName,
+                       plotFormat,
+                       plotDimensions,
+                       color_scale,
+                       sodList) {
+    polarity <- unique(splitData$polarity)
+    sodList <- list()
+    splitFileName <-
+      paste(splitFileName, polarity, sep = "-")
+    stopifnot(length(unique(splitData$group)) == 1)
+    sodList[["fits"]] <- flipr::fits(
+      tibble = splitData,
+      outputPrefix = splitFileName,
+      group = unique(splitData$group)[[1]],
+      instrumentId = instrumentId,
+      skipGroupOutput = skipGroupOutput,
+      start_lower = start_lower,
+      start_upper = start_upper,
+      lower = lower,
+      upper = upper,
+      minDataPoints = minDataPoints,
+      max_iter = max_iter
+    )
+    sodList[["fitPlots"]] <- flipr::plotFits(
+      sodList[["fits"]],
+      splitFileName,
+      plotFormat = plotFormat,
+      plotDimensions = plotDimensions,
+      color_scale = color_scale
+    )
+    return(sodList)
+  }, splitFileName = fileName, plotFormat = plotFormat, plotDimensions = plotDimensions, color_scale = color_scale, sodList = sodList)
+}
+
+#' Create the data qc plots for an FIP table.
+#'
+#' @param fileName the base filename of the FIP table, without the file extension.
+#' @param subsetData the data subset.
+#' @param plotFormat the plot format, as supported by \code{ggplot2::ggsave}.
+#' @param plotDimensions the plot dimensions to use, when printing the plot object to the output device.
+#' @param color_scale the ggplot2 color scale to use for fragments.
+#' @return a list with a named entry of a ggplot grob object for the corresponding plot.
+#' @export
+createDataPlots <-
+  function(fileName,
+           subSetData,
+           plotFormat = "PNG",
+           plotDimensions = list(width = 11.69,
+                                 height = 8.27),
+           color_scale = ggplot2::scale_colour_hue()) {
+    # split dataframe based on polarity
+    dfl <- split(subSetData, subSetData$polarity)
+
+    purrr::map(dfl, function(splitData) {
+      dataPlots <- list()
+      customTheme <-
+        ggplot2::theme_get() + ggplot2::theme(axis.text.x  = ggplot2::element_text(angle = 90, vjust = 0.5))
+      ggplot2::theme_set(customTheme)
+      polarity <- unique(splitData$polarity)
+      fileName <- paste(fileName, polarity, sep = "-")
+
+      message("fragment-ppm-boxplot")
+      ppms <- sort(unique(splitData$`foundMassRange[ppm]`))
+      splitData$`foundMassRange[ppm]` <-
+        paste(splitData$`foundMassRange[ppm]`, "[ppm]", sep = " ")
+      splitData$`foundMassRange[ppm]` <-
+        factor(splitData$`foundMassRange[ppm]`,
+               levels = paste(ppms, "[ppm]", sep = " "))
+
+      splitData$fragadd <-
+        paste(splitData$fragment, splitData$adduct, sep = " ")
+      splitData$fragadd <-
+        factor(splitData$fragadd,
+               levels = unique(splitData[order(splitData$calculatedMass), ]$fragadd))
+
+      splitData$fragment <-
+        factor(splitData$fragment,
+               levels = unique(splitData[order(splitData$calculatedMass), ]$fragment))
+      readr::write_tsv(splitData, path = file.path(paste(
+        fileName, "-raw-plots-input.tsv", sep = ""
+      )))
+      dataPlots[["rawTicVsTotalIonCurrent"]] = flipr::plotRawTicVsTotalIonCurrent(
+        data = splitData,
+        basename = fileName,
+        plotFormat = plotFormat,
+        plotDimensions = plotDimensions
+      )
+      dataPlots[["fragmentPpmBoxplot"]] <-
+        flipr::plotFragmentPpmBoxplot(splitData,
+                                      fileName,
+                                      plotFormat = plotFormat,
+                                      plotDimensions = plotDimensions)
+
+      splitData.NAs <-
+        subset(splitData, subset = is.na(splitData$foundMass))
+      if (nrow(splitData.NAs) > 0) {
+        readr::write_tsv(splitData.NAs, path = file.path(paste(
+          fileName, "-no-ions-found.tsv", sep = ""
+        )))
+      }
+      splitData.noNAs <-
+        splitData[!is.na(splitData$foundMass),]
+
+      readr::write_tsv(splitData, path = file.path(paste(
+        fileName, "-data-plots-input.tsv", sep = ""
+      )))
+      dataPlots[["precCollEnergyVsFoundIntensity"]] <-
+        flipr::plotPrecCollEnergyVsFoundIntensity(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      dataPlots[["precCollEnergyVsScanRelativeIntensityNormalized"]] <-
+        flipr::plotPrecCollEnergyVsScanRelativeIntensityNormalized(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      dataPlots[["precCollEnergyVsScanRelativeIntensityOverlay"]] <-
+        flipr::plotPrecCollEnergyVsScanRelativeIntensityOverlay(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      dataPlots[["precCollEnergyVsMassErrorPpm"]] <-
+        flipr::plotPrecCollEnergyVsMassErrorPpm(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      dataPlots[["massDensityDistribution"]] <-
+        flipr::plotMassDensityDistribution(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      dataPlots[["mzVsMerrPpm"]] <- flipr::plotMzVsMerrPpm(
+        splitData.noNAs,
+        fileName,
+        plotFormat = plotFormat,
+        plotDimensions = plotDimensions,
+        color_scale = color_scale
+      )
+      dataPlots[["scanRelativeIntenstityHistogram"]] <-
+        flipr::plotScanRelativeIntensityHistogram(
+          splitData.noNAs,
+          fileName,
+          plotFormat = plotFormat,
+          plotDimensions = plotDimensions,
+          color_scale = color_scale
+        )
+      return(dataPlots)
+    })
   }

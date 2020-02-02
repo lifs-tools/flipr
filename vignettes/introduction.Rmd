@@ -1,16 +1,20 @@
 ---
-title: "introduction"
+title: "Using flipR"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+fig_width: 12 
+fig_height: 8 
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=12, 
+  fig.height=8
 )
 ```
 
@@ -18,67 +22,21 @@ knitr::opts_chunk$set(
 library(flipr)
 ```
 
-## Quick Start ##
+## Training a Model for 12-HETE ##
 
-```R
-  library("flipr")
-  xics_file <- system.file("testdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
-  config <- system.file("testdata", "qex-HF-config.R", package = "flipr", mustWork = TRUE)
-  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
+The following example shows, how to train and automatically select nonlinear models for the mediator 12-HETE (in this case the +D8, heavy labeled variant).
+The necessary data is available within this R package directly.
+
+First, load the `flipr` library and import a feature table:
+
+```{r quickstart}
+library("flipr")
+xics_file <- system.file("testdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
 ```
-
-Prepare the data
-
-```R
-  subSetData <- xics_file %>%
-            dplyr::mutate(
-              precursorCollisionEnergyUnitLabel = dplyr::case_when(
-                precursorCollisionEnergyUnit == "electronvolt" ~ "Collision Energy [eV]",
-                precursorCollisionEnergyUnit == "normalized" ~ "Normalized Collision Energy",
-                TRUE ~ as.character(precursorCollisionEnergyUnit)
-              )
-            ) # captures anything else as character
-          dataIndex <- unique(subSetData$originId)[[1]]
-          message(paste0("Processing data from ", unique(subSetData$origin)))
-          subSetData$fragadd <-
-            paste(subSetData$fragment, subSetData$adduct, sep = " ")
-          subSetData$fragadd <-
-            factor(subSetData$fragadd, levels = unique(subSetData[order(subSetData$calculatedMass), ]$fragadd))
-          message(paste0(
-            "Using Fragment+Adduct levels ",
-            paste0(levels(subSetData$fragadd), collapse = " | ")
-          ))
-          color_scale <-
-            ggplot2::scale_colour_hue(
-              name = "Fragment",
-              limits = as.character(levels(subSetData$fragadd)),
-              aesthetics = c("colour", "fill")
-            )
-```
-
-## Usual Workflow ##
-
-### Creating a transition list with LipidCreator
-Please consult the interactive tutorials within LipidCreator, the LipidCreator documentation and workshop materials at https://lifs.isas.de/lipidcreator for details on creating transition lists.
-
-Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.
-
-### Measuring a standard sample on an MS platform
-
-We used a step size of 1 between collision energies (eV for CID with QTFO, NCE for HCD with Thermo QExHF) and repeated fragmentation between 
-
-### Converting the raw MS data
-
-We use msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking.
-
-
-### Extracting fragment ion traces from the MS file 
-
-Transition extractor 
 
 ### Anatomy of the feature table format (*-fip.tsv)
 
-The feature table `*-fip.tsv` is created by the transition extraction step and serves as the main data input for flipR- It holds one m/z feature per row, with the following columns, specifying its provenance, parameters and information that is used by downstream steps to maintain a mapping between input transition list and output parameter file for LipidCreator- The following columns are reported in the output file (some correspond to *.mzML elements / attributes, some come from LipidCreator / Skyline):
+The feature table `*-fip.tsv` is created by the transition extraction step (see below) and serves as the main data input for flipR- It holds one m/z feature per row, with the following columns, specifying its provenance, parameters and information that is used by downstream steps to maintain a mapping between input transition list and output parameter file for LipidCreator- The following columns are reported in the output file (some correspond to *.mzML elements / attributes, some come from LipidCreator / Skyline):
 
 - instrument
 - localDateTimeCreated
@@ -120,18 +78,159 @@ The feature table `*-fip.tsv` is created by the transition extraction step and s
 - fragment
 - adduct
 
-### Fitting a model for multiple fragment ion traces over a CE sequence
+You can have multiple, fragment-specific models fitted through the data present in the fip file, distinguished by instrument, origin, polarity, species, precursorAdduct, fragment and adduct. 
 
-```R
-  library("flipr")
-  xics_file <- system.file("testdata", "12-HETE-d8-_M-H_1--qex_fip.tsv", package = "flipr", mustWork = TRUE)
-  config <- system.file("testdata", "qex-HF-config.R", package = "flipr", mustWork = TRUE)
-  fits <- flip(projectDir = dirname(xics_file), plotFormat = "pdf", filePattern = basename(xics_file), dataPlots = TRUE)
+### Loading a custom configuration
+
+Within the next step, we will load a default configuration for this example. This file defines the parameter search ranges used for the optimization of the individual fragment models. If you source it, it will create `lower` and `upper`, which define the global search range for each parameter, and `start_lower` and `start_upper` within the local environment, which define where the optimization should start for each parameter.
+
+```{r loadconfig}
+config <- system.file("testdata", "qex-HF-config.R", package = "flipr", mustWork = TRUE)
+source(config, local = TRUE, verbose = FALSE)
 ```
 
-The `fits` list now contains multiple elements:
+### Fitting the nonlinear models and visualizing results
 
-### LipidCreator Parameter Table (After model training and selection)
+The next step fits the actual fragment specific models with different parameterizations within the previously defined ranges, but omits creating QC data plots before the fit training:
+
+```{r fitmodels, message=FALSE, warning=FALSE}
+fits <- flip(projectDir = dirname(xics_file), plotFormat = "png", filePattern = basename(xics_file), trainModel = TRUE, dataPlots = FALSE, start_lower = start_lower, start_upper = start_upper, lower = lower, upper = upper)
+```
+
+The returned `fits` list contains the tidied model details (post-processed with the broom library).
+The following tibble contains the nested models, their data, and other diagnostic information:
+
+```{r fitModel}
+head(fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fits$fits)
+```
+
+The `fitinfo` tibble contains the tidied model performance figures, such as whether the model has converged, the final selected AIC and BIC values, etc.:
+
+```{r fitInfo}
+head(fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fits$fitinfo)
+```
+
+The `preds` and `predsFromData` are tibbles with predicted values calculated from the fitted models on a custom generated CE grid, and predicted values based on the CE values contained in the original training data.
+
+```{r fitPreds}
+head(fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fits$preds)
+```
+
+Predictions from data:
+
+```{r fitPredsFromData}
+head(fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fits$preds_from_data)
+```
+
+The fit params object contains, for each of the fragments and ppm extraction windows, the term, estimate, p-values, confidence intervals and more.
+
+```{r fitParams}
+head(fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fits$params)
+```
+
+### Diagnostic plots for fits
+
+The returned `fits` list also contains plots for the predicted fits and the actual fit data in tidy format (post-processed with the broom library). Since the fip file links its features back to the original MS file (mzML), the results can be accessed by using the MS file's name as key. To allow fits from the same source file in positive and negative mode, a separate level is included (NEGATIVE and/or POSITIVE) to unambiguously identify the fit results and plots:
+
+```{r predictedFitsPlot, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$predictedFits
+```
+
+For the residuals:
+
+```{r residualsPlot, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$residuals
+```
+
+For the quantile-quantile plot with standardized residuals:
+
+```{r qqplot, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$residualsQQ
+```
+
+For the Mean Sum-of-Squared residuals:
+
+```{r residualsMeanSumSqPlot, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$residualsMeanSumSq
+```
+
+The number of total training samples (over all CE steps) for each combination id (fragment + adduct):
+
+```{r numberOfSamplesPerCombinationIdPlot, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$numberOfSamplesPerCombinationId
+```
+
+And for the parameter confidence intervals:
+
+```{r parameterConfidenceIntervalsPlots, message=FALSE, warning=FALSE}
+fits[[1]]$fits$QExHF03_NM_0001295.mzML$fitResults$NEGATIVE$fitPlots$parameterConfidenceIntervals
+```
+
+### Generating and inspecting QC plots
+
+The `flip` function can be called with the `dataPlots = TRUE` option in order to generate QC plots based on the `fip` files:
+
+```{r generatingQcPlots}
+fits2 <- flip(projectDir = dirname(xics_file), plotFormat = "png", filePattern = basename(xics_file), trainModel = FALSE, dataPlots = TRUE)
+```
+
+
+This plot shows the correlation between the raw integrated ions of each MS2 scan vs the total ion current, as given by the msconvert tool within the scan's header. These values can differ and this plot is used to check for linearity between both values.
+```{r rawTicVsTotalIonCurrent}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$rawTicVsTotalIonCurrent
+```
+
+This plot shows the absolute fragment ion intensities over the collision energy range. Overlaid is a LOESS local regression line to highlight trends in the fragmentation behaviour.
+```{r precCollEnergyVsFoundIntensity}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$precCollEnergyVsFoundIntensity
+```
+
+This plots shows the fragment ion intensities over the collision energy range, normalized to the total intensity of the MS2 scan. Overlaid is a LOESS local regression line to highlight trends in the fragmentation behaviour.
+```{r precCollEnergyVsScanRelativeIntensityNormalized}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$precCollEnergyVsScanRelativeIntensityNormalized
+```
+
+This plot shows an overlay of all individual fragment traces over the collision energy range. It is helpful to spot ionization or spray issues which would be clearly visible due to dips in the areas.
+```{r precCollEnergyVsScanRelativeIntensityOverlay}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$precCollEnergyVsScanRelativeIntensityOverlay
+```
+
+The precursor collision energy versus mass error in PPM plot shows the mass error on the vertical axis, depending on the collision energy on the horizontal axis.
+```{r precCollEnergyVsMassErrorPpm}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$precCollEnergyVsMassErrorPpm
+```
+
+The mass density distribution plot shows all detected and extracted fragments and visualizes the mass deviation density on the horizontal axis.
+```{r massDensityDistribution}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$massDensityDistribution
+```
+
+The following plot shows a summary of the extracted data-points and their deviation from the calculated m/z for each fragment, depending on the defined PPM extraction window and the targeted m/z value:
+```{r fragmentPpmBoxplot}
+fits2[[1]]$fits$QExHF03_NM_0001295.mzML$dataPlots$NEGATIVE$fragmentPpmBoxplot
+```
+
+## General Integrated Workflow with LipidCreator ##
+
+### Creating a transition list with LipidCreator
+Please consult the interactive tutorials within [LipidCreator](https://github.com/lifs-tools/lipidcreator), the LipidCreator documentation and workshop materials at https://lifs.isas.de/lipidcreator for details on creating transition lists.
+
+Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.
+
+### Measuring a standard sample on an MS platform
+
+We used a step size of 1 between collision energies (eV for CID with QTOF, NCE for HCD with Thermo QExHF) and repeated fragmentation of each precursor, adapted to the capabilities of the MS platform (more repetitions on QEX vs. fewer repetitions on QTOF).
+
+### Converting the raw MS data
+
+We used msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking, as well as 64 bit encoding precision.
+
+### Extracting fragment ion traces from the MS file 
+
+The [transition extractor](https://github.com/lifs-tools/flipr-transition-extractor) is a Java-based tool that reads an mzML file and extracts the MS2 spectra data matching a given transition list. We use LipidCreator to create such a transition list, but in general, any tool could be used that sticks to the general LipidCreator transition list format.
+Please note that LipidCreator transition lists need to be created in `dev` mode (starting LipidCreator with a `dev` argument) in order to generate special markings for heavy labeled precursors. Ultimately, the flipr-transition-extractor also runs flipR as a local process. Please see the respective installation instructions. A ready to run version is included in the [flipr-trainer](https://github.com/lifs-tools/flipr-trainer).
+
+### LipidCreator Parameter Table Integration and Model Registration (After model training and selection)
 The comma-separated lipid creator parameter file contains collision energy calculation parameters for each lipid class, as reported and concatenated by flipR- There are as many rows for each fragment, as there are parameters- The following columns are required in this file: 
 - instrument the PSI-MS CV term id identifying the instrument, e.g- MS:1002523 for Thermo Scientific Q Exactive HF.
 - class	the lipid class, e.g- 10-HDoHE, needs to be double quoted, when the name contains a comma.
@@ -139,3 +238,12 @@ The comma-separated lipid creator parameter file contains collision energy calcu
 - fragment the fragment identifier- If no common name is available, use e.g- "m/z 121.0658"- The precursor must be reported as "precursor".
 - ParKey the model parameter name, currently one of "model", "meanlog", "sdlog", "scale", and "shift".
 - ParValue the model parameter values, currently, for "model" only "dlnormPar" is recognized- Other parameters are expected to be reported as double numbers with a "." as the decimal separator.
+
+To use this table in LipidCreator, place it in the `data/ce-parameters` directory of LipidCreator. The name should correspond to the platform's CV term id. For the QEx-HF, the name should be `MS_1002523.csv`. Additionally, you need to register an MS platform in the `data/ms-instruments.csv` file. Each line contains the settings for a particular MS platform, as identified by its respective [PSI-MS cv term id](https://www.ebi.ac.uk/ols/ontologies/ms/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMS_1000031&viewMode=All&siblings=true). The line for the QEx HF platform looks as follows:
+
+```
+MS:1002523,Thermo Scientific Q Exactive HF,10,60,Normalized Collision Energy,PRM
+```
+
+It defines the devices PSI-MS term id, a cleartext name, the minimum collision energy value for CE energy and relative fragment intensity prediction, the maximum collision energy value, the collision energy unit, and the assay generation mode, for which the CE optimization should be used (here: PRM).
+
