@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plots the residuals between predicted and measured values. — plotResiduals • flipr</title>
+<title>Create the fragment model fits and fit plots for an FIP table. — createFits • flipr</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Plots the residuals between predicted and measured values. — plotResiduals" />
-<meta property="og:description" content="Plots the residuals between predicted and measured values." />
+<meta property="og:title" content="Create the fragment model fits and fit plots for an FIP table. — createFits" />
+<meta property="og:description" content="Create the fragment model fits and fit plots for an FIP table." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -112,19 +112,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plots the residuals between predicted and measured values.</h1>
+    <h1>Create the fragment model fits and fit plots for an FIP table.</h1>
     
-    <div class="hidden name"><code>plotResiduals.Rd</code></div>
+    <div class="hidden name"><code>createFits.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plots the residuals between predicted and measured values.</p>
+    <p>Create the fragment model fits and fit plots for an FIP table.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotResiduals</span>(
-  <span class='no'>nlsFitsList</span>,
-  <span class='no'>outputPrefix</span>,
-  <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"png"</span>,
+    <pre class="usage"><span class='fu'>createFits</span>(
+  <span class='no'>fileName</span>,
+  <span class='no'>subSetData</span>,
+  <span class='no'>instrumentId</span>,
+  <span class='no'>skipGroupOutput</span>,
+  <span class='no'>start_lower</span>,
+  <span class='no'>start_upper</span>,
+  <span class='no'>lower</span>,
+  <span class='no'>upper</span>,
+  <span class='no'>minDataPoints</span>,
+  <span class='no'>max_iter</span>,
+  <span class='kw'>plotFormat</span> <span class='kw'>=</span> <span class='st'>"PNG"</span>,
   <span class='kw'>plotDimensions</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>11.69</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>8.27</span>),
   <span class='kw'>color_scale</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_hue.html'>scale_colour_hue</a></span>()
 )</pre>
@@ -133,30 +141,62 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nlsFitsList</th>
-      <td><p>the FIP fits output list.</p></td>
+      <th>fileName</th>
+      <td><p>the base filename of the FIP table, without the file extension.</p></td>
     </tr>
     <tr>
-      <th>outputPrefix</th>
-      <td><p>the basename (identifying a case) for the plot.</p></td>
+      <th>instrumentId</th>
+      <td><p>the instrumentId of this data.</p></td>
+    </tr>
+    <tr>
+      <th>skipGroupOutput</th>
+      <td><p>whether to skip writing of grouping information (for debugging).</p></td>
+    </tr>
+    <tr>
+      <th>start_lower</th>
+      <td><p>the lower bound to start the parameter grid search, argument is passed to nls_multstart.</p></td>
+    </tr>
+    <tr>
+      <th>start_upper</th>
+      <td><p>the upper bound to start the parameter grid search, argument is passed to nls_multstart.</p></td>
+    </tr>
+    <tr>
+      <th>lower</th>
+      <td><p>the lower bound for the parameter estimates, argument is passed to nlsLM.</p></td>
+    </tr>
+    <tr>
+      <th>upper</th>
+      <td><p>the upper bound for the parameter estimates, argument is passed to nlsLM.</p></td>
+    </tr>
+    <tr>
+      <th>minDataPoints</th>
+      <td><p>the minimum number of data points required per fragment / adduct / ppm combination to be considered for model calculation.</p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>the maximum number of iterations of the model to calculate.</p></td>
     </tr>
     <tr>
       <th>plotFormat</th>
-      <td><p>the format, passed to <code><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggplot2::ggsave</a></code>.</p></td>
+      <td><p>the plot format, as supported by <code><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggplot2::ggsave</a></code>.</p></td>
     </tr>
     <tr>
       <th>plotDimensions</th>
-      <td><p>the dimensions of the plot.</p></td>
+      <td><p>the plot dimensions to use, when printing the plot object to the output device.</p></td>
     </tr>
     <tr>
       <th>color_scale</th>
-      <td><p>the shared color scale to identify fragment and adduct pairs.</p></td>
+      <td><p>the ggplot2 color scale to use for fragments.</p></td>
+    </tr>
+    <tr>
+      <th>subsetData</th>
+      <td><p>the data subset.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the ggplot object.</p>
+    <p>a list with a named entry of 'fits', containing the model fitting results, and a named entry 'fitPlots', containing ggplot grob object for the corresponding plot.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

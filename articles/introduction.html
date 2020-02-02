@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>introduction • flipr</title>
+<title>Using flipR • flipr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="introduction">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Using flipR">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/introduction.html">introduction</a>
+      <a href="../articles/introduction.html">Using flipR</a>
     </li>
   </ul>
 </li>
@@ -72,7 +72,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>introduction</h1>
+      <h1>Using flipR</h1>
             
       
       
@@ -83,67 +83,17 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(flipr)</a></code></pre></div>
-<div id="quick-start" class="section level2">
+<div id="training-a-model-for-12-hete" class="section level2">
 <h2 class="hasAnchor">
-<a href="#quick-start" class="anchor"></a>Quick Start</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">  config &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"qex-HF-config.R"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">  fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<p>Prepare the data</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">  subSetData &lt;-<span class="st"> </span>xics_file <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">            </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">              <span class="dt">precursorCollisionEnergyUnitLabel =</span> dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">                precursorCollisionEnergyUnit <span class="op">==</span><span class="st"> "electronvolt"</span> <span class="op">~</span><span class="st"> "Collision Energy [eV]"</span>,</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">                precursorCollisionEnergyUnit <span class="op">==</span><span class="st"> "normalized"</span> <span class="op">~</span><span class="st"> "Normalized Collision Energy"</span>,</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">                <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(precursorCollisionEnergyUnit)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">              )</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">            ) <span class="co"># captures anything else as character</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">          dataIndex &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData<span class="op">$</span>originId)[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">          <span class="kw"><a href="https://rdrr.io/r/base/message.html">message</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Processing data from "</span>, <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData<span class="op">$</span>origin)))</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">          subSetData<span class="op">$</span>fragadd &lt;-</a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="st">            </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(subSetData<span class="op">$</span>fragment, subSetData<span class="op">$</span>adduct, <span class="dt">sep =</span> <span class="st">" "</span>)</a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">          subSetData<span class="op">$</span>fragadd &lt;-</a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="st">            </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(subSetData<span class="op">$</span>fragadd, <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(subSetData[<span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(subSetData<span class="op">$</span>calculatedMass), ]<span class="op">$</span>fragadd))</a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">          <span class="kw"><a href="https://rdrr.io/r/base/message.html">message</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(</a>
-<a class="sourceLine" id="cb3-16" data-line-number="16">            <span class="st">"Using Fragment+Adduct levels "</span>,</a>
-<a class="sourceLine" id="cb3-17" data-line-number="17">            <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(subSetData<span class="op">$</span>fragadd), <span class="dt">collapse =</span> <span class="st">" | "</span>)</a>
-<a class="sourceLine" id="cb3-18" data-line-number="18">          ))</a>
-<a class="sourceLine" id="cb3-19" data-line-number="19">          color_scale &lt;-</a>
-<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="st">            </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_colour_hue</a></span>(</a>
-<a class="sourceLine" id="cb3-21" data-line-number="21">              <span class="dt">name =</span> <span class="st">"Fragment"</span>,</a>
-<a class="sourceLine" id="cb3-22" data-line-number="22">              <span class="dt">limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(subSetData<span class="op">$</span>fragadd)),</a>
-<a class="sourceLine" id="cb3-23" data-line-number="23">              <span class="dt">aesthetics =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"colour"</span>, <span class="st">"fill"</span>)</a>
-<a class="sourceLine" id="cb3-24" data-line-number="24">            )</a></code></pre></div>
-</div>
-<div id="usual-workflow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usual-workflow" class="anchor"></a>Usual Workflow</h2>
-<div id="creating-a-transition-list-with-lipidcreator" class="section level3">
-<h3 class="hasAnchor">
-<a href="#creating-a-transition-list-with-lipidcreator" class="anchor"></a>Creating a transition list with LipidCreator</h3>
-<p>Please consult the interactive tutorials within LipidCreator, the LipidCreator documentation and workshop materials at <a href="https://lifs.isas.de/lipidcreator" class="uri">https://lifs.isas.de/lipidcreator</a> for details on creating transition lists.</p>
-<p>Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.</p>
-</div>
-<div id="measuring-a-standard-sample-on-an-ms-platform" class="section level3">
-<h3 class="hasAnchor">
-<a href="#measuring-a-standard-sample-on-an-ms-platform" class="anchor"></a>Measuring a standard sample on an MS platform</h3>
-<p>We used a step size of 1 between collision energies (eV for CID with QTFO, NCE for HCD with Thermo QExHF) and repeated fragmentation between</p>
-</div>
-<div id="converting-the-raw-ms-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#converting-the-raw-ms-data" class="anchor"></a>Converting the raw MS data</h3>
-<p>We use msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking.</p>
-</div>
-<div id="extracting-fragment-ion-traces-from-the-ms-file" class="section level3">
-<h3 class="hasAnchor">
-<a href="#extracting-fragment-ion-traces-from-the-ms-file" class="anchor"></a>Extracting fragment ion traces from the MS file</h3>
-<p>Transition extractor</p>
-</div>
+<a href="#training-a-model-for-12-hete" class="anchor"></a>Training a Model for 12-HETE</h2>
+<p>The following example shows, how to train and automatically select nonlinear models for the mediator 12-HETE (in this case the +D8, heavy labeled variant). The necessary data is available within this R package directly.</p>
+<p>First, load the <code>flipr</code> library and import a feature table:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <div id="anatomy-of-the-feature-table-format--fip-tsv" class="section level3">
 <h3 class="hasAnchor">
 <a href="#anatomy-of-the-feature-table-format--fip-tsv" class="anchor"></a>Anatomy of the feature table format (*-fip.tsv)</h3>
-<p>The feature table <code>*-fip.tsv</code> is created by the transition extraction step and serves as the main data input for flipR- It holds one m/z feature per row, with the following columns, specifying its provenance, parameters and information that is used by downstream steps to maintain a mapping between input transition list and output parameter file for LipidCreator- The following columns are reported in the output file (some correspond to *.mzML elements / attributes, some come from LipidCreator / Skyline):</p>
+<p>The feature table <code>*-fip.tsv</code> is created by the transition extraction step (see below) and serves as the main data input for flipR- It holds one m/z feature per row, with the following columns, specifying its provenance, parameters and information that is used by downstream steps to maintain a mapping between input transition list and output parameter file for LipidCreator- The following columns are reported in the output file (some correspond to *.mzML elements / attributes, some come from LipidCreator / Skyline):</p>
 <ul>
 <li>instrument</li>
 <li>localDateTimeCreated</li>
@@ -185,20 +135,195 @@
 <li>fragment</li>
 <li>adduct</li>
 </ul>
+<p>You can have multiple, fragment-specific models fitted through the data present in the fip file, distinguished by instrument, origin, polarity, species, precursorAdduct, fragment and adduct.</p>
 </div>
-<div id="fitting-a-model-for-multiple-fragment-ion-traces-over-a-ce-sequence" class="section level3">
+<div id="loading-a-custom-configuration" class="section level3">
 <h3 class="hasAnchor">
-<a href="#fitting-a-model-for-multiple-fragment-ion-traces-over-a-ce-sequence" class="anchor"></a>Fitting a model for multiple fragment ion traces over a CE sequence</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"flipr"</span>)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">  xics_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"12-HETE-d8-_M-H_1--qex_fip.tsv"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">  config &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"qex-HF-config.R"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">  fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"pdf"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<p>The <code>fits</code> list now contains multiple elements:</p>
+<a href="#loading-a-custom-configuration" class="anchor"></a>Loading a custom configuration</h3>
+<p>Within the next step, we will load a default configuration for this example. This file defines the parameter search ranges used for the optimization of the individual fragment models. If you source it, it will create <code>lower</code> and <code>upper</code>, which define the global search range for each parameter, and <code>start_lower</code> and <code>start_upper</code> within the local environment, which define where the optimization should start for each parameter.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">config &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"testdata"</span>, <span class="st">"qex-HF-config.R"</span>, <span class="dt">package =</span> <span class="st">"flipr"</span>, <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span>(config, <span class="dt">local =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
-<div id="lipidcreator-parameter-table-after-model-training-and-selection" class="section level3">
+<div id="fitting-the-nonlinear-models-and-visualizing-results" class="section level3">
 <h3 class="hasAnchor">
-<a href="#lipidcreator-parameter-table-after-model-training-and-selection" class="anchor"></a>LipidCreator Parameter Table (After model training and selection)</h3>
+<a href="#fitting-the-nonlinear-models-and-visualizing-results" class="anchor"></a>Fitting the nonlinear models and visualizing results</h3>
+<p>The next step fits the actual fragment specific models with different parameterizations within the previously defined ranges, but omits creating QC data plots before the fit training:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"png"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">trainModel =</span> <span class="ot">TRUE</span>, <span class="dt">dataPlots =</span> <span class="ot">FALSE</span>, <span class="dt">start_lower =</span> start_lower, <span class="dt">start_upper =</span> start_upper, <span class="dt">lower =</span> lower, <span class="dt">upper =</span> upper)</a></code></pre></div>
+<p>The returned <code>fits</code> list contains the tidied model details (post-processed with the broom library). The following tibble contains the nested models, their data, and other diagnostic information:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fits<span class="op">$</span>fits)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 9</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; # Groups:   combinationId [6]</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt;   combinationId  data  fit   fitFun info  params CI    preds_from_data new_preds</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;   &lt;chr&gt;          &lt;lis&gt; &lt;lis&gt; &lt;chr&gt;  &lt;lis&gt; &lt;list&gt; &lt;lis&gt; &lt;list&gt;          &lt;list&gt;   </span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; 1 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [723 ×… &lt;tibble …</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; 2 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [723 ×… &lt;tibble …</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; 3 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [732 ×… &lt;tibble …</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; 4 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [732 ×… &lt;tibble …</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; 5 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [732 ×… &lt;tibble …</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; 6 12-HETE-d8|[M… &lt;tib… &lt;nls&gt; dlnor… &lt;tib… &lt;tibb… &lt;df[… &lt;tibble [732 ×… &lt;tibble …</span></a></code></pre></div>
+<p>The <code>fitinfo</code> tibble contains the tidied model performance figures, such as whether the model has converged, the final selected AIC and BIC values, etc.:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fits<span class="op">$</span>fitinfo)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 10</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; # Groups:   combinationId [6]</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt;   combinationId fitFun   sigma isConv  finTol logLik    AIC    BIC deviance</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;    &lt;dbl&gt; &lt;lgl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 1 12-HETE-d8|[… dlnor… 0.00171 TRUE   1.49e-8  3581. -7153. -7130.  0.00211</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; 2 12-HETE-d8|[… dlnor… 0.00171 TRUE   1.49e-8  3581. -7153. -7130.  0.00211</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 3 12-HETE-d8|[… dlnor… 0.00154 TRUE   1.49e-8  3704. -7397. -7374.  0.00173</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt; 4 12-HETE-d8|[… dlnor… 0.00154 TRUE   1.49e-8  3704. -7397. -7374.  0.00173</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; 5 12-HETE-d8|[… dlnor… 0.0110  TRUE   1.49e-8  2267. -4524. -4501.  0.0875 </span></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; 6 12-HETE-d8|[… dlnor… 0.0110  TRUE   1.49e-8  2267. -4524. -4501.  0.0875 </span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; # … with 1 more variable: df.residual &lt;int&gt;</span></a></code></pre></div>
+<p>The <code>preds</code> and <code>predsFromData</code> are tibbles with predicted values calculated from the fitted models on a custom generated CE grid, and predicted values based on the CE values contained in the original training data.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fits<span class="op">$</span>preds)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 5</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt;   combinationId             precursorCollisio… scanRelativeInte… min_pce max_pce</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt;   &lt;chr&gt;                                  &lt;dbl&gt;             &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; 1 12-HETE-d8|[M-H]1-|140.1…                 10           0.00166       9      61</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; 2 12-HETE-d8|[M-H]1-|140.1…                 11           0.00221       9      61</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; 3 12-HETE-d8|[M-H]1-|140.1…                 12           0.00290       9      61</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; 4 12-HETE-d8|[M-H]1-|140.1…                 13           0.00374       9      61</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; 5 12-HETE-d8|[M-H]1-|140.1…                 14           0.00478       9      61</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; 6 12-HETE-d8|[M-H]1-|140.1…                 15           0.00601       9      61</span></a></code></pre></div>
+<p>Predictions from data:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fits<span class="op">$</span>preds_from_data)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; # A tibble: 6 x 9</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt;   combinationId scanRelativeInt… precursorCollis… X.weights. .fitted  .resid</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt;   &lt;chr&gt;                    &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 1 12-HETE-d8|[…          0.00638               10          1 0.00166 4.72e-3</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 2 12-HETE-d8|[…          0.00595               11          1 0.00221 3.74e-3</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 3 12-HETE-d8|[…          0.00517               12          1 0.00290 2.28e-3</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 4 12-HETE-d8|[…          0.00466               13          1 0.00374 9.12e-4</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt; 5 12-HETE-d8|[…          0.00549               14          1 0.00478 7.10e-4</span></a>
+<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#&gt; 6 12-HETE-d8|[…          0.00605               15          1 0.00601 4.01e-5</span></a>
+<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#&gt; # … with 3 more variables: .std.resid &lt;dbl&gt;, .m.resid &lt;dbl&gt;, .sd.resid &lt;dbl&gt;</span></a></code></pre></div>
+<p>The fit params object contains, for each of the fragments and ppm extraction windows, the term, estimate, p-values, confidence intervals and more.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fits<span class="op">$</span>params)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt;                                                combinationId    term</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; 1 12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|10|0001295 meanlog</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; 2 12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|10|0001295   scale</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; 3 12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|10|0001295   sdlog</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; 4 12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|10|0001295   shift</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; 5  12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|5|0001295 meanlog</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; 6  12-HETE-d8|[M-H]1-|140.149|[M-H]1-|(-)|140.1493|5|0001295   scale</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;       estimate    std.error  statistic       p.value    fitFun     conf.low</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; 1   5.34767769  0.118155376  45.259707 1.274671e-212 dlnormPar   5.11570692</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; 2   1.22461039  0.003663803 334.245667  0.000000e+00 dlnormPar   1.21741736</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; 3   0.04813141  0.005743771   8.379759  2.780244e-16 dlnormPar   0.03685485</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; 4 175.00776923 24.845787988   7.043760  4.384673e-12 dlnormPar 126.22880749</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt; 5   5.34767780  0.118155386  45.259704 1.274718e-212 dlnormPar   5.11570701</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 6   1.22461039  0.003663801 334.245917  0.000000e+00 dlnormPar   1.21741737</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt;      conf.high</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; 1   5.57964846</span></a>
+<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; 2   1.23180343</span></a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt; 3   0.05940798</span></a>
+<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt; 4 223.78673096</span></a>
+<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt; 5   5.57964859</span></a>
+<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt; 6   1.23180342</span></a></code></pre></div>
+</div>
+<div id="diagnostic-plots-for-fits" class="section level3">
+<h3 class="hasAnchor">
+<a href="#diagnostic-plots-for-fits" class="anchor"></a>Diagnostic plots for fits</h3>
+<p>The returned <code>fits</code> list also contains plots for the predicted fits and the actual fit data in tidy format (post-processed with the broom library). Since the fip file links its features back to the original MS file (mzML), the results can be accessed by using the MS file’s name as key. To allow fits from the same source file in positive and negative mode, a separate level is included (NEGATIVE and/or POSITIVE) to unambiguously identify the fit results and plots:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>predictedFits</a></code></pre></div>
+<p><img src="introduction_files/figure-html/predictedFitsPlot-1.png" width="1152"></p>
+<p>For the residuals:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>residuals</a></code></pre></div>
+<p><img src="introduction_files/figure-html/residualsPlot-1.png" width="1152"></p>
+<p>For the quantile-quantile plot with standardized residuals:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>residualsQQ</a></code></pre></div>
+<p><img src="introduction_files/figure-html/qqplot-1.png" width="1152"></p>
+<p>For the Mean Sum-of-Squared residuals:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>residualsMeanSumSq</a></code></pre></div>
+<p><img src="introduction_files/figure-html/residualsMeanSumSqPlot-1.png" width="1152"></p>
+<p>The number of total training samples (over all CE steps) for each combination id (fragment + adduct):</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>numberOfSamplesPerCombinationId</a></code></pre></div>
+<p><img src="introduction_files/figure-html/numberOfSamplesPerCombinationIdPlot-1.png" width="1152"></p>
+<p>And for the parameter confidence intervals:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">fits[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>fitResults<span class="op">$</span>NEGATIVE<span class="op">$</span>fitPlots<span class="op">$</span>parameterConfidenceIntervals</a></code></pre></div>
+<p><img src="introduction_files/figure-html/parameterConfidenceIntervalsPlots-1.png" width="1152"></p>
+</div>
+<div id="generating-and-inspecting-qc-plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#generating-and-inspecting-qc-plots" class="anchor"></a>Generating and inspecting QC plots</h3>
+<p>The <code>flip</code> function can be called with the <code>dataPlots = TRUE</code> option in order to generate QC plots based on the <code>fip</code> files:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">fits2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/flip.html">flip</a></span>(<span class="dt">projectDir =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">dirname</a></span>(xics_file), <span class="dt">plotFormat =</span> <span class="st">"png"</span>, <span class="dt">filePattern =</span> <span class="kw"><a href="https://rdrr.io/r/base/basename.html">basename</a></span>(xics_file), <span class="dt">trainModel =</span> <span class="ot">FALSE</span>, <span class="dt">dataPlots =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="co">#&gt; Project dir is /home/travis/R/Library/flipr/testdata</span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; Creating plots for file /home/travis/R/Library/flipr/testdata/12-HETE-d8-_M-H_1--qex_fip.tsv</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt; Filtering 13259 rows with precursorCollisionEnergy &gt;= 0</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; 13259 rows retained after filter!</span></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"><span class="co">#&gt; Split data into 1 partitions with levels QExHF03_NM_0001295.mzML</span></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"><span class="co">#&gt; Processing data from QExHF03_NM_0001295.mzML</span></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="co">#&gt; Using Fragment+Adduct levels 59.013 [M-H]1- | 140.149 [M-H]1- | 169.150 [M-H]1- | 184.139 [M-H]1- | 214.148 [M-H]1- | 237.246 [M-H]1- | 265.277 [M-H]1- | 283.288 [M-H]1- | 309.267 [M-H]1- | precursor [M-H]1-</span></a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"><span class="co">#&gt; Writing to file 12-HETE-d8-_M-H_1--qex_fip-1-of-1</span></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="co">#&gt; fragment-ppm-boxplot</span></a>
+<a class="sourceLine" id="cb16-11" data-line-number="11"><span class="co">#&gt; precursorCollisionEnergy-vs-foundIntensity</span></a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="co">#&gt; precursorCollisionEnergy-vs-foundIntensity-scan-relative-normalized</span></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; Warning: Removed 13259 rows containing missing values (geom_point).</span></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt; Warning: Removed 70 rows containing missing values (geom_smooth).</span></a>
+<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="co">#&gt; precursorCollisionEnergy-vs-foundIntensity-scan-relative-normalized-overlay</span></a>
+<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="co">#&gt; precursorCollisionEnergy-vs-mass-error-ppm</span></a>
+<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#&gt; m/z density distribution</span></a>
+<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co">#&gt; m/z-vs-mass-error-ppm</span></a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co">#&gt; foundIntensity-scan-relative-normalized-histogram</span></a>
+<a class="sourceLine" id="cb16-20" data-line-number="20"><span class="co">#&gt; Warning: Removed 40 rows containing missing values (geom_bar).</span></a>
+<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#&gt; Skipping training of models. Set argument 'trainModel=TRUE' to create!</span></a></code></pre></div>
+<p>This plot shows the correlation between the raw integrated ions of each MS2 scan vs the total ion current, as given by the msconvert tool within the scan’s header. These values can differ and this plot is used to check for linearity between both values.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>rawTicVsTotalIonCurrent</a></code></pre></div>
+<p><img src="introduction_files/figure-html/rawTicVsTotalIonCurrent-1.png" width="1152"></p>
+<p>This plot shows the absolute fragment ion intensities over the collision energy range. Overlaid is a LOESS local regression line to highlight trends in the fragmentation behaviour.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>precCollEnergyVsFoundIntensity</a></code></pre></div>
+<p><img src="introduction_files/figure-html/precCollEnergyVsFoundIntensity-1.png" width="1152"></p>
+<p>This plots shows the fragment ion intensities over the collision energy range, normalized to the total intensity of the MS2 scan. Overlaid is a LOESS local regression line to highlight trends in the fragmentation behaviour.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>precCollEnergyVsScanRelativeIntensityNormalized</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="co">#&gt; Warning: Removed 13259 rows containing missing values (geom_point).</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">#&gt; Warning: Removed 70 rows containing missing values (geom_smooth).</span></a></code></pre></div>
+<p><img src="introduction_files/figure-html/precCollEnergyVsScanRelativeIntensityNormalized-1.png" width="1152"></p>
+<p>This plot shows an overlay of all individual fragment traces over the collision energy range. It is helpful to spot ionization or spray issues which would be clearly visible due to dips in the areas.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>precCollEnergyVsScanRelativeIntensityOverlay</a></code></pre></div>
+<p><img src="introduction_files/figure-html/precCollEnergyVsScanRelativeIntensityOverlay-1.png" width="1152"></p>
+<p>The precursor collision energy versus mass error in PPM plot shows the mass error on the vertical axis, depending on the collision energy on the horizontal axis.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>precCollEnergyVsMassErrorPpm</a></code></pre></div>
+<p><img src="introduction_files/figure-html/precCollEnergyVsMassErrorPpm-1.png" width="1152"></p>
+<p>The mass density distribution plot shows all detected and extracted fragments and visualizes the mass deviation density on the horizontal axis.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>massDensityDistribution</a></code></pre></div>
+<p><img src="introduction_files/figure-html/massDensityDistribution-1.png" width="1152"></p>
+<p>The following plot shows a summary of the extracted data-points and their deviation from the calculated m/z for each fragment, depending on the defined PPM extraction window and the targeted m/z value:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">fits2[[<span class="dv">1</span>]]<span class="op">$</span>fits<span class="op">$</span>QExHF03_NM_<span class="fl">0001295.</span>mzML<span class="op">$</span>dataPlots<span class="op">$</span>NEGATIVE<span class="op">$</span>fragmentPpmBoxplot</a></code></pre></div>
+<p><img src="introduction_files/figure-html/fragmentPpmBoxplot-1.png" width="1152"></p>
+</div>
+</div>
+<div id="general-integrated-workflow-with-lipidcreator" class="section level2">
+<h2 class="hasAnchor">
+<a href="#general-integrated-workflow-with-lipidcreator" class="anchor"></a>General Integrated Workflow with LipidCreator</h2>
+<div id="creating-a-transition-list-with-lipidcreator" class="section level3">
+<h3 class="hasAnchor">
+<a href="#creating-a-transition-list-with-lipidcreator" class="anchor"></a>Creating a transition list with LipidCreator</h3>
+<p>Please consult the interactive tutorials within <a href="https://github.com/lifs-tools/lipidcreator">LipidCreator</a>, the LipidCreator documentation and workshop materials at <a href="https://lifs.isas.de/lipidcreator" class="uri">https://lifs.isas.de/lipidcreator</a> for details on creating transition lists.</p>
+<p>Please note that at the moment, flipR only supports fragmentation patterns of lipid mediators. It may work for other lipid classes, but may not achieve the same performance as for the mediators.</p>
+</div>
+<div id="measuring-a-standard-sample-on-an-ms-platform" class="section level3">
+<h3 class="hasAnchor">
+<a href="#measuring-a-standard-sample-on-an-ms-platform" class="anchor"></a>Measuring a standard sample on an MS platform</h3>
+<p>We used a step size of 1 between collision energies (eV for CID with QTOF, NCE for HCD with Thermo QExHF) and repeated fragmentation of each precursor, adapted to the capabilities of the MS platform (more repetitions on QEX vs. fewer repetitions on QTOF).</p>
+</div>
+<div id="converting-the-raw-ms-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#converting-the-raw-ms-data" class="anchor"></a>Converting the raw MS data</h3>
+<p>We used msConvert to convert the raw MS data for different vendor platforms into mzML, using centroiding and vendor peak picking, as well as 64 bit encoding precision.</p>
+</div>
+<div id="extracting-fragment-ion-traces-from-the-ms-file" class="section level3">
+<h3 class="hasAnchor">
+<a href="#extracting-fragment-ion-traces-from-the-ms-file" class="anchor"></a>Extracting fragment ion traces from the MS file</h3>
+<p>The <a href="https://github.com/lifs-tools/flipr-transition-extractor">transition extractor</a> is a Java-based tool that reads an mzML file and extracts the MS2 spectra data matching a given transition list. We use LipidCreator to create such a transition list, but in general, any tool could be used that sticks to the general LipidCreator transition list format. Please note that LipidCreator transition lists need to be created in <code>dev</code> mode (starting LipidCreator with a <code>dev</code> argument) in order to generate special markings for heavy labeled precursors. Ultimately, the flipr-transition-extractor also runs flipR as a local process. Please see the respective installation instructions. A ready to run version is included in the <a href="https://github.com/lifs-tools/flipr-trainer">flipr-trainer</a>.</p>
+</div>
+<div id="lipidcreator-parameter-table-integration-and-model-registration-after-model-training-and-selection" class="section level3">
+<h3 class="hasAnchor">
+<a href="#lipidcreator-parameter-table-integration-and-model-registration-after-model-training-and-selection" class="anchor"></a>LipidCreator Parameter Table Integration and Model Registration (After model training and selection)</h3>
 <p>The comma-separated lipid creator parameter file contains collision energy calculation parameters for each lipid class, as reported and concatenated by flipR- There are as many rows for each fragment, as there are parameters- The following columns are required in this file: - instrument the PSI-MS CV term id identifying the instrument, e.g- MS:1002523 for Thermo Scientific Q Exactive HF. - class the lipid class, e.g- 10-HDoHE, needs to be double quoted, when the name contains a comma. - adduct the precursor adduct for this lipid class, e.g- [M-H]1-. - fragment the fragment identifier- If no common name is available, use e.g- “m/z 121.0658”- The precursor must be reported as “precursor”. - ParKey the model parameter name, currently one of “model”, “meanlog”, “sdlog”, “scale”, and “shift”. - ParValue the model parameter values, currently, for “model” only “dlnormPar” is recognized- Other parameters are expected to be reported as double numbers with a “.” as the decimal separator.</p>
+<p>To use this table in LipidCreator, place it in the <code>data/ce-parameters</code> directory of LipidCreator. The name should correspond to the platform’s CV term id. For the QEx-HF, the name should be <code>MS_1002523.csv</code>. Additionally, you need to register an MS platform in the <code>data/ms-instruments.csv</code> file. Each line contains the settings for a particular MS platform, as identified by its respective <a href="https://www.ebi.ac.uk/ols/ontologies/ms/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMS_1000031&amp;viewMode=All&amp;siblings=true">PSI-MS cv term id</a>. The line for the QEx HF platform looks as follows:</p>
+<pre><code>MS:1002523,Thermo Scientific Q Exactive HF,10,60,Normalized Collision Energy,PRM</code></pre>
+<p>It defines the devices PSI-MS term id, a cleartext name, the minimum collision energy value for CE energy and relative fragment intensity prediction, the maximum collision energy value, the collision energy unit, and the assay generation mode, for which the CE optimization should be used (here: PRM).</p>
 </div>
 </div>
   </div>
@@ -209,8 +334,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#quick-start">Quick Start</a></li>
-      <li><a href="#usual-workflow">Usual Workflow</a></li>
+<li><a href="#training-a-model-for-12-hete">Training a Model for 12-HETE</a></li>
+      <li><a href="#general-integrated-workflow-with-lipidcreator">General Integrated Workflow with LipidCreator</a></li>
       </ul>
 </div>
       </div>
