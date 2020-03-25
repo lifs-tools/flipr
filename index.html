@@ -78,6 +78,7 @@
 
 <p>FlipR is a package to help in optimal collision energy selection for molecules based on MS2 data that was gathered with increasing collision energies. It therefor fits a parameterized log-normal distribution to the relative intensity of one particular fragment ion (incl. adduct) over the range of collision energies. We use the nls.multstart package to select a model that minimizes the AIC value within a given range of parameters that are used in a grid search, starting in an initially user-determined range. The log-normal distribution is able to adapt quite well to different fragments and their distribution profiles. Some cases though seemingly show different fragmentation behaviour that is usually visible through a less steep decline (flatter curve) of the scan relative intensity over the range of fragmentation energies.</p>
 <p>It has been tested on Thermo QExactive HF and Waters QTof instruments.</p>
+<p>Please see the <a href="https://github.com/lifs-tools/flipr-trainer">flipr-trainer</a> project for an execution and training harness for multiple measurements.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -91,10 +92,10 @@
 <p>Load the devtools library:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</a></code></pre></div>
 <p>Run</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"lifs-tools/flipr"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">  <span class="kw"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"lifs-tools/flipr"</span>)</a></code></pre></div>
 <p>This will install the latest, potentially unstable development version of the package with all required dependencies into your local R installation.</p>
 <p>If you want to use a proper release version, referenced by a Git tag (here: v1.0.6) install the package as follows:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"lifs-tools/flipr"</span>, <span class="dt">ref=</span><span class="st">"v1.0.6"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">  <span class="kw"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"lifs-tools/flipr"</span>, <span class="dt">ref=</span><span class="st">"v1.0.6"</span>)</a></code></pre></div>
 <p>To load the package, start an R session and type</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(flipr)</a></code></pre></div>
 <p>Type the following to see the package vignette / tutorial:</p>
