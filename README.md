@@ -6,6 +6,8 @@ FlipR is a package to help in optimal collision energy selection for molecules b
 
 It has been tested on Thermo QExactive HF and Waters QTof instruments.
 
+Please see the [flipr-trainer](https://github.com/lifs-tools/flipr-trainer) project for an execution and training harness for multiple measurements.
+
 ## Installation ##
 
 Install devtools:
